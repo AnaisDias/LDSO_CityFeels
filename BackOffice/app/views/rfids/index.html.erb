@@ -1,30 +1,41 @@
-<div class="col-xs-offset-1 col-xs-10">
-    <table class="table table-condensed">
-        <tr>
-            <th>RFID</th>
-            <th>SIA</th>
-            <th>Rua</th>
-            <th>Passadeira</th>
-            <th>Local</th>
-            <th></th>
-        </tr>
-        <% @rfids.each do |r| %>
+<div class="row container-fluid">
+    <div class="col-xs-12">
+        <form id="search">
+            <input type="text" class="form-control" placeholder="Pesquisar">
+            <input type="submit" style="display:none" />
+        </form>
+    </div>
+</div>
+<hr/>
+<div class="row container-fluid">
+    <div id="results" class="col-xs-12">
+        <table class="table table-condensed">
             <tr>
-                <td><%= r.number %></td>
-                <td><%= r.sia %></td>
-                <td>
-                    <% if r.href %>
-                        <a href=<%=r.href %>><%= r.rua %></a>
-                    <% else %>
-                        <%= r.rua %>
-                    <% end %>
-                </td>
-                <td><%= r.passadeira %></td>
-                <td><%= r.local %></td>
-                <td>
-                    <%= link_to "Editar", controller: "rfids", action: "update", id: r.number %>
-                </td>
+                <th>RFID</th>
+                <th>SIA</th>
+                <th>Rua</th>
+                <th>Passadeira</th>
+                <th>Local</th>
+                <th></th>
             </tr>
-        <% end %>
-    </table>
+            <% @rfids.each do |r| %>
+                <tr>
+                    <td><%= r.number %></td>
+                    <td><%= r.sia %></td>
+                    <td>
+                        <% if r.href %>
+                            <a href=<%=r.href %>><%= r.rua %></a>
+                        <% else %>
+                            <%= r.rua %>
+                        <% end %>
+                    </td>
+                    <td><%= r.passadeira %></td>
+                    <td><%= r.local %></td>
+                    <td>
+                        <%= link_to "Editar", controller: "rfids", action: "update", id: r.number %>
+                    </td>
+                </tr>
+            <% end %>
+        </table>
+    </div>
 </div>

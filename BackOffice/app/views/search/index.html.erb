@@ -1,0 +1,28 @@
+<table class="table table-condensed">
+    <tr>
+        <th>RFID</th>
+        <th>SIA</th>
+        <th>Rua</th>
+        <th>Passadeira</th>
+        <th>Local</th>
+        <th></th>
+    </tr>
+    <% @rfids.each do |r| %>
+        <tr>
+            <td><%= r.number %></td>
+            <td><%= r.sia %></td>
+            <td>
+                <% if r.href %>
+                    <a href=<%=r.href %>><%= r.rua %></a>
+                <% else %>
+                    <%= r.rua %>
+                <% end %>
+            </td>
+            <td><%= r.passadeira %></td>
+            <td><%= r.local %></td>
+            <td>
+                <%= link_to "Editar", controller: "rfids", action: "update", id: r.number %>
+            </td>
+        </tr>
+    <% end %>
+</table>
