@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="C:/Users/Anaís/workspace/LDSO_DB/org.json-20120521.jar"/>
+	<classpathentry kind="var" path="JRE_LIB"/>
+	<classpathentry kind="lib" path="C:/Users/Anaís/workspace/LDSO_DB/commons-dbcp2-2.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Anaís/workspace/LDSO_DB/commons-pool2-2.4.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Anaís/workspace/LDSO_DB/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files (x86)/MySQL/Connector.J 5.1/mysql-connector-java-5.1.37-bin.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
