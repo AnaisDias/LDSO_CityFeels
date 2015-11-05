@@ -120,7 +120,8 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             @Override
             public void onClick(View v) {
                 Etiqueta lastEtiqueta = Database.getLastEtiqueta();
-                textToSpeech.speak(lastEtiqueta.informacao, TextToSpeech.QUEUE_ADD, null);
+                if(lastEtiqueta != null)
+                    textToSpeech.speak(lastEtiqueta.informacao, TextToSpeech.QUEUE_ADD, null);
             }
         });
     }
