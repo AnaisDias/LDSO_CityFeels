@@ -41,7 +41,7 @@ public class SIA implements Runnable {
 			System.out.println("Request method invalid!");
 			JSONObject js = new JSONObject();
 			js.put("success", false);
-			js.put("message", "Parameters invalid!");
+			js.put("message", "Parameters invalid! Method should be get");
 			String response = js.toString();
 			httpE.sendResponseHeaders(200, response.length());
 			OutputStream os = httpE.getResponseBody();
@@ -51,10 +51,11 @@ public class SIA implements Runnable {
 		}
 	
 		Map<String,String> parameters = queryToMap(httpE.getRequestURI().getQuery());
-		if(parameters.containsKey("lat") && !parameters.get("lat").isEmpty()){
-			String type = parameters.get("lat");
-			
+		if(parameters.containsKey("type") && !parameters.get("type").isEmpty()){
+			String type = parameters.get("type");
+			System.out.print(type);
 			if(type.equals("0")){
+				System.out.print(parameters.get("lng"));
 				if(parameters.containsKey("lat") && !parameters.get("lat").isEmpty() &&
 						parameters.containsKey("lng") && !parameters.get("lng").isEmpty()){
 					double lat = Double.parseDouble(parameters.get("lat"));
@@ -62,6 +63,7 @@ public class SIA implements Runnable {
 					JSONObject js = new JSONObject();
 					String response = "";
 					js = MyDatabase.getInfo(lat, lng);
+					System.out.print("Response: " + js.toString());
 					if(js != null){
 						response = js.toString();
 						
@@ -73,7 +75,7 @@ public class SIA implements Runnable {
 					}
 				}
 			}
-			if(type.equals("1")){
+			else if(type.equals("1")){
 				
 				
 				if(parameters.containsKey("lat") && !parameters.get("lat").isEmpty() &&

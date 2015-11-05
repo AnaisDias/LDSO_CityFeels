@@ -25,13 +25,13 @@ public class Server {
 		
 		int portn = Integer.parseInt(args[0]);
 		HttpServer server = HttpServer.create(new InetSocketAddress(portn), 0);
-		server.createContext("/project", new ProjHandler());
+		server.createContext("/sia", new SiaHandler());
 		server.setExecutor(null); // creates a default executor
 		server.start();
 		
 	}
 	
-	static class ProjHandler implements HttpHandler {
+	static class SiaHandler implements HttpHandler {
 		public void handle(HttpExchange httpE) throws IOException {
 			SIA sia = new SIA(httpE);
 			Thread lThread = new Thread(sia);
