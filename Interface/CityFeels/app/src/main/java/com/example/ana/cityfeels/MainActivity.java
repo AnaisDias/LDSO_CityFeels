@@ -10,79 +10,47 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.ana.cityfeels.sia.Etiqueta;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener, LocationEventListener {
 
+    private enum InformationLayer {
+        Basic, Local, Detailed, Another
+    }
+
     private final static int TEXT_TO_SPEECH_CHECK_CODE = 0;
 
+    private InformationLayer currentInformationLayer = InformationLayer.Basic;
     private TextToSpeech textToSpeech;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //DEPOIS POR EM FUNÇAO-----------------------------------------
-        final Button btn1 = (Button) findViewById(R.id.button1);
-        final Button btn2 = (Button) findViewById(R.id.button2);
-        final Button btn3 = (Button) findViewById(R.id.button3);
-        final Button btn4 = (Button) findViewById(R.id.button4);
-        btn1.setOnTouchListener(new View.OnTouchListener() {
+        setLayerButtonsClickListeners();
+        setGenerateLocationButtonListeners();
+        setRepeatInstructionsButtonListener();
+        LocationEventDispatcher.registerOnNewLocation(this);
 
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                v.setPressed(true);
-                btn2.setPressed(false);
-                btn3.setPressed(false);
-                btn4.setPressed(false);
-                return true;
-            }
-        });
-        btn2.setOnTouchListener(new View.OnTouchListener() {
+        View basicLayerButton = findViewById(R.id.button1);
+        basicLayerButton.setPressed(true);
 
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                v.setPressed(true);
-                btn1.setPressed(false);
-                btn3.setPressed(false);
-                btn4.setPressed(false);
-                return true;
-            }
-        });
-        btn3.setOnTouchListener(new View.OnTouchListener() {
+        Intent checkTTSIntent = new Intent();
+        checkTTSIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+        startActivityForResult(checkTTSIntent, TEXT_TO_SPEECH_CHECK_CODE);
+    }
 
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                v.setPressed(true);
-                btn2.setPressed(false);
-                btn1.setPressed(false);
-                btn4.setPressed(false);
-                return true;
-            }
-        });
-        btn4.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                v.setPressed(true);
-                btn2.setPressed(false);
-                btn3.setPressed(false);
-                btn1.setPressed(false);
-                return true;
-            }
-        });
-        //----DEPOIS POR EM FUNÇAO-----------------------------------------
-
+    private void setGenerateLocationButtonListeners() {
         Button generateLocationButton = (Button) findViewById(R.id.generate_location_button);
         generateLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,12 +60,80 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 LocationEventDispatcher.fireNewLocation(new Location(latitude, 3f));
             }
         });
+    }
 
-        LocationEventDispatcher.registerOnNewLocation(this);
+    private void setLayerButtonsClickListeners() {
+        final Button basicLayerButton = (Button) findViewById(R.id.button1);
+        final Button localLayerButton = (Button) findViewById(R.id.button2);
+        final Button detailedLayerButton = (Button) findViewById(R.id.button3);
+        final Button anotherLayerButton = (Button) findViewById(R.id.button4);
 
-        Intent checkTTSIntent = new Intent();
-        checkTTSIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-        startActivityForResult(checkTTSIntent, TEXT_TO_SPEECH_CHECK_CODE);
+        basicLayerButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                view.setPressed(true);
+                localLayerButton.setPressed(false);
+                detailedLayerButton.setPressed(false);
+                anotherLayerButton.setPressed(false);
+                setInformationLayer(InformationLayer.Basic);
+                return true;
+            }
+        });
+        localLayerButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.setPressed(true);
+                basicLayerButton.setPressed(false);
+                detailedLayerButton.setPressed(false);
+                anotherLayerButton.setPressed(false);
+                setInformationLayer(InformationLayer.Local);
+                return true;
+            }
+        });
+        detailedLayerButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.setPressed(true);
+                localLayerButton.setPressed(false);
+                basicLayerButton.setPressed(false);
+                anotherLayerButton.setPressed(false);
+                setInformationLayer(InformationLayer.Detailed);
+                return true;
+            }
+        });
+        anotherLayerButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.setPressed(true);
+                localLayerButton.setPressed(false);
+                basicLayerButton.setPressed(false);
+                detailedLayerButton.setPressed(false);
+                setInformationLayer(InformationLayer.Another);
+                return true;
+            }
+        });
+    }
+
+    private void setRepeatInstructionsButtonListener() {
+        ImageButton repeatInstructionsButton = (ImageButton) findViewById(R.id.imageButton);
+        repeatInstructionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Etiqueta lastEtiqueta = Database.getLastEtiqueta();
+                textToSpeech.speak(lastEtiqueta.informacao, TextToSpeech.QUEUE_ADD, null);
+            }
+        });
+    }
+
+    private void setInformationLayer(InformationLayer layer) {
+        switch(layer) {
+            case Basic: break;
+            case Local: break;
+            case Detailed: break;
+            case Another: break;
+        }
+
+        this.currentInformationLayer = layer;
     }
 
     @Override
@@ -124,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
     @Override
     public void onNewLocation(Location location) {
-        Toast.makeText(this, location.latitude + ", " + location.longitude, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, location.toString(), Toast.LENGTH_LONG).show();
 
         Etiqueta etiqueta = Database.getEtiquetaAtLocation(location);
         this.textToSpeech.speak(etiqueta.informacao, TextToSpeech.QUEUE_ADD, null);
@@ -135,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         if(status == TextToSpeech.SUCCESS) {
             this.textToSpeech.setLanguage(new Locale("pt", "BR"));
 
+            /*
             Locale[] locales = Locale.getAvailableLocales();
             List<Locale> localeList = new ArrayList<>();
             for (Locale locale : locales) {
@@ -143,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                     localeList.add(locale);
                 }
             }
+            */
 
         }
         else if (status == TextToSpeech.ERROR)
@@ -161,4 +199,5 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             }
         }
     }
+
 }
