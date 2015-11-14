@@ -1,4 +1,4 @@
-package com.example.ana.cityfeels;
+package com.example.ana.cityfeels.sia;
 
 public class Location {
 

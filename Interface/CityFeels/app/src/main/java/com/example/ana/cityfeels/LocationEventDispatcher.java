@@ -1,7 +1,6 @@
 package com.example.ana.cityfeels;
 
-import android.location.LocationListener;
-import android.os.Bundle;
+import com.example.ana.cityfeels.sia.Location;
 
 import java.util.Iterator;
 import java.util.LinkedList;

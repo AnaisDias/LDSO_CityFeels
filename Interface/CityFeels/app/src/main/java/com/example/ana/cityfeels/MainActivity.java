@@ -1,7 +1,9 @@
 package com.example.ana.cityfeels;
 
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +16,10 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.ana.cityfeels.sia.Etiqueta;
+import com.example.ana.cityfeels.sia.Location;
+import com.example.ana.cityfeels.sia.PointOfInterest;
+
+import org.json.JSONException;
 
 import java.util.Locale;
 import java.util.Random;
@@ -33,6 +39,9 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -55,9 +64,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         generateLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Random random = new Random();
-                float latitude = random.nextInt(2) + 1;
-                LocationEventDispatcher.fireNewLocation(new Location(latitude, 3f));
+                LocationEventDispatcher.fireNewLocation(new Location(1, 2));
             }
         });
     }
@@ -119,9 +126,9 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         repeatInstructionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Etiqueta lastEtiqueta = Database.getLastEtiqueta();
-                if(lastEtiqueta != null)
-                    textToSpeech.speak(lastEtiqueta.informacao, TextToSpeech.QUEUE_ADD, null);
+                PointOfInterest poi = DataSource.getLastPointOfInterest();
+                if(poi != null)
+                    textToSpeech.speak(poi.about, TextToSpeech.QUEUE_ADD, null);
             }
         });
     }
@@ -162,9 +169,8 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     @Override
     public void onNewLocation(Location location) {
         Toast.makeText(this, location.toString(), Toast.LENGTH_LONG).show();
-
-        Etiqueta etiqueta = Database.getEtiquetaAtLocation(location);
-        this.textToSpeech.speak(etiqueta.informacao, TextToSpeech.QUEUE_ADD, null);
+        PointOfInterest pointOfInterest = DataSource.getPointOfInterest(location, DataSource.DataLayer.Basic, null);
+        this.textToSpeech.speak(pointOfInterest.about, TextToSpeech.QUEUE_ADD, null);
     }
 
     @Override
