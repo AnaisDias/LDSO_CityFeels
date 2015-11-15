@@ -1,11 +1,12 @@
 package com.example.ana.cityfeels;
 
-import com.example.ana.cityfeels.sia.JsonHttpRequest;
-import com.example.ana.cityfeels.sia.Location;
-import com.example.ana.cityfeels.sia.PointOfInterest;
+import com.example.ana.cityfeels.sia.PontoInteresse;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 public class SIA {
 
@@ -14,13 +15,42 @@ public class SIA {
 
     private SIA() {}
 
-    public static PointOfInterest getPointOfInterest(Location location) throws JSONException {
+    public static PontoInteresse getPointOfInterest(Location location) throws JSONException, IOException {
         String url = WEB_SERVICE_POI_URL;
         String queryString = String.format("?lat=%s&long=%s", location.latitude, location.longitude);
 
-        JSONObject response = JsonHttpRequest.get(url + queryString);
+        JSONObject response = JsonHttpRequest.getObject(url + queryString);
 
-        String about = response.getString("Informacao");
-        return new PointOfInterest(about);
+        if(response == null)
+            return null;
+        else
+        {
+            String about = response.getString("informacao");
+            return new PontoInteresse(location, about);
+        }
+    }
+
+    public static PontoInteresse[] getCloseByPointsOfInterest(Location location, float distanceInMeters) throws IOException, JSONException {
+        String url = WEB_SERVICE_POI_URL;
+        String queryString = String.format("?lat=%s&long=%s", location.latitude, location.longitude);
+        queryString += "&distance=" + distanceInMeters;
+
+        JSONArray results = JsonHttpRequest.getArray(url + queryString);
+        if(results == null)
+            return null;
+        else
+        {
+            PontoInteresse[] closeByPoints = new PontoInteresse[results.length()];
+            for(int i = 0; i < results.length(); i++)
+            {
+                JSONObject currentPoint = results.getJSONObject(i);
+                String informacao = currentPoint.getString("informacao");
+                double latitude = currentPoint.getDouble("latitude");
+                double longitude = currentPoint.getDouble("longitude");
+                closeByPoints[i] = new PontoInteresse(new Location(latitude, longitude), informacao);
+            }
+
+            return closeByPoints;
+        }
     }
 }

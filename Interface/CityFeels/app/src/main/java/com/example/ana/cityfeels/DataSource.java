@@ -1,10 +1,13 @@
 package com.example.ana.cityfeels;
 
-import com.example.ana.cityfeels.sia.Location;
-import com.example.ana.cityfeels.sia.PointOfInterest;
-import com.example.ana.cityfeels.sia.Route;
+import com.example.ana.cityfeels.sia.PontoInteresse;
+import com.example.ana.cityfeels.sia.Percurso;
 
 import org.json.JSONException;
+
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 public class DataSource {
 
@@ -14,23 +17,63 @@ public class DataSource {
         Basic, Local, Detailed, Another
     }
 
-    private static PointOfInterest LAST_POINT_OF_INTEREST = null;
+    private final static int MAX_DISTANCE_BETWEEN_POI = 50;
+    private static IPontoInteresse LAST_POINT_OF_INTEREST = null;
 
-    public static PointOfInterest getPointOfInterest(Location location, DataLayer layer) {
+    public static IPontoInteresse getPointOfInterest(Location location, DataLayer layer) throws IOException {
         return DataSource.getPointOfInterest(location, layer, null);
     }
 
-    public static PointOfInterest getPointOfInterest(Location location, DataLayer layer, Route route) {
+    public static IPontoInteresse getPointOfInterest(Location location, DataLayer layer, Percurso percurso) throws IOException {
+        IPontoInteresse pontoInteresse = null;
+
         try {
-            PointOfInterest poi = SIA.getPointOfInterest(location);
-            return poi == null ? poi : (LAST_POINT_OF_INTEREST = poi);
+            PontoInteresse pi = SIA.getPointOfInterest(location);
+
+            pontoInteresse = new PontoInteresseBasic(pi.posicao, pi.informacao);
+
+            if(layer != DataLayer.Basic)
+            {
+                pontoInteresse = toLocal((PontoInteresseBasic) pontoInteresse);
+
+                if(layer == DataLayer.Local)
+                    return pontoInteresse;
+
+                pontoInteresse = toDetailed((PontoInteresseLocal) pontoInteresse);
+
+                if(layer == DataLayer.Detailed)
+                    return pontoInteresse;
+            }
+
+            return pontoInteresse;
         } catch (JSONException e) {
             return null;
+        } finally {
+            if(pontoInteresse != null)
+                LAST_POINT_OF_INTEREST = pontoInteresse;
         }
     }
 
-    public static PointOfInterest getLastPointOfInterest() {
+    public static IPontoInteresse getLastPointOfInterest() {
         return LAST_POINT_OF_INTEREST;
+    }
+
+    public static PontoInteresseLocal toLocal(PontoInteresseBasic pontoInteresseBasic) throws IOException, JSONException {
+        List<PontoInteresseBasic> arredoresList = new LinkedList<PontoInteresseBasic>();
+
+        for(PontoInteresse ponto : SIA.getCloseByPointsOfInterest(pontoInteresseBasic.posicao, MAX_DISTANCE_BETWEEN_POI))
+            arredoresList.add(PontoInteresseBasic.fromPontoInteresse(ponto));
+
+        Location posicao = pontoInteresseBasic.posicao;
+        String informacao = pontoInteresseBasic.informacao;
+        PontoInteresseBasic[] arredoresArray = arredoresList.toArray(new PontoInteresseBasic[0]);
+
+        return new PontoInteresseLocal(posicao, informacao, arredoresArray);
+    }
+
+    public static PontoInteresseDetailed toDetailed(PontoInteresseLocal pontoInteresse)
+    {
+        return null;
     }
 
 }

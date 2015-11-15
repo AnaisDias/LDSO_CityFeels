@@ -1,13 +1,13 @@
-package com.example.ana.cityfeels.sia;
+package com.example.ana.cityfeels;
 
 public class Location {
 
-    public float latitude;
-    public float longitude;
+    public double latitude;
+    public double longitude;
 
     public Location() {}
 
-    public Location(float latitude, float longitude)
+    public Location(double latitude, double longitude)
     {
         this.latitude = latitude;
         this.longitude = longitude;

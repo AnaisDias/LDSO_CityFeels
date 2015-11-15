@@ -1,7 +1,5 @@
 package com.example.ana.cityfeels;
 
-import com.example.ana.cityfeels.sia.Location;
-
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;

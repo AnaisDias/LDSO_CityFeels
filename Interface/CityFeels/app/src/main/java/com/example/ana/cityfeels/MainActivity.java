@@ -1,7 +1,6 @@
 package com.example.ana.cityfeels;
 
 import android.content.Intent;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.speech.tts.TextToSpeech;
@@ -15,24 +14,25 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.example.ana.cityfeels.sia.Etiqueta;
-import com.example.ana.cityfeels.sia.Location;
-import com.example.ana.cityfeels.sia.PointOfInterest;
+import com.example.ana.cityfeels.sia.PontoInteresse;
 
-import org.json.JSONException;
-
+import java.io.IOException;
 import java.util.Locale;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener, LocationEventListener {
 
-    private enum InformationLayer {
-        Basic, Local, Detailed, Another
+    private final static int TEXT_TO_SPEECH_CHECK_CODE = 0;
+    private static Location[] TEST_LOCATIONS;
+
+    static {
+        TEST_LOCATIONS = new Location[3];
+        TEST_LOCATIONS[0] = new Location(41.1654249, -8.6082677);
+        TEST_LOCATIONS[1] = new Location(41.1654034, -8.6085272);
+        TEST_LOCATIONS[2] = new Location(41.1778791, -8.6001047);
     }
 
-    private final static int TEXT_TO_SPEECH_CHECK_CODE = 0;
-
-    private InformationLayer currentInformationLayer = InformationLayer.Basic;
+    private DataSource.DataLayer currentInformationLayer = DataSource.DataLayer.Basic;
     private TextToSpeech textToSpeech;
 
     @Override
@@ -64,7 +64,10 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         generateLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LocationEventDispatcher.fireNewLocation(new Location(1, 2));
+                Random random = new Random();
+                int index = random.nextInt(TEST_LOCATIONS.length);
+
+                LocationEventDispatcher.fireNewLocation(TEST_LOCATIONS[index]);
             }
         });
     }
@@ -82,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 localLayerButton.setPressed(false);
                 detailedLayerButton.setPressed(false);
                 anotherLayerButton.setPressed(false);
-                setInformationLayer(InformationLayer.Basic);
+                setInformationLayer(DataSource.DataLayer.Basic);
                 return true;
             }
         });
@@ -93,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 basicLayerButton.setPressed(false);
                 detailedLayerButton.setPressed(false);
                 anotherLayerButton.setPressed(false);
-                setInformationLayer(InformationLayer.Local);
+                setInformationLayer(DataSource.DataLayer.Local);
                 return true;
             }
         });
@@ -104,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 localLayerButton.setPressed(false);
                 basicLayerButton.setPressed(false);
                 anotherLayerButton.setPressed(false);
-                setInformationLayer(InformationLayer.Detailed);
+                setInformationLayer(DataSource.DataLayer.Detailed);
                 return true;
             }
         });
@@ -115,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 localLayerButton.setPressed(false);
                 basicLayerButton.setPressed(false);
                 detailedLayerButton.setPressed(false);
-                setInformationLayer(InformationLayer.Another);
+                setInformationLayer(DataSource.DataLayer.Another);
                 return true;
             }
         });
@@ -126,14 +129,14 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         repeatInstructionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PointOfInterest poi = DataSource.getLastPointOfInterest();
-                if(poi != null)
-                    textToSpeech.speak(poi.about, TextToSpeech.QUEUE_ADD, null);
+                IPontoInteresse poi = DataSource.getLastPointOfInterest();
+                if (poi != null)
+                    textToSpeech.speak(poi.getInformation(), TextToSpeech.QUEUE_ADD, null);
             }
         });
     }
 
-    private void setInformationLayer(InformationLayer layer) {
+    private void setInformationLayer(DataSource.DataLayer layer) {
         switch(layer) {
             case Basic: break;
             case Local: break;
@@ -169,8 +172,17 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     @Override
     public void onNewLocation(Location location) {
         Toast.makeText(this, location.toString(), Toast.LENGTH_LONG).show();
-        PointOfInterest pointOfInterest = DataSource.getPointOfInterest(location, DataSource.DataLayer.Basic, null);
-        this.textToSpeech.speak(pointOfInterest.about, TextToSpeech.QUEUE_ADD, null);
+        IPontoInteresse pontoInteresse = null;
+        try {
+            pontoInteresse = DataSource.getPointOfInterest(location, this.currentInformationLayer);
+            if(pontoInteresse != null)
+            {
+                this.textToSpeech.speak(pontoInteresse.getInformation(), TextToSpeech.QUEUE_ADD, null);
+            }
+        } catch (IOException e) {
+            Toast.makeText(this, "Erro ao conectar!", Toast.LENGTH_LONG).show();
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override

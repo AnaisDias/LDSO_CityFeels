@@ -1,5 +1,6 @@
-package com.example.ana.cityfeels.sia;
+package com.example.ana.cityfeels;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,7 +15,15 @@ public class JsonHttpRequest {
 
     private JsonHttpRequest() {}
 
-    public static JSONObject get(String url) {
+    public static JSONObject getObject(String url) throws IOException, JSONException {
+        return new JSONObject(getContent(url));
+    }
+
+    public static JSONArray getArray(String url) throws IOException, JSONException {
+        return new JSONArray(getContent(url));
+    }
+
+    private static String getContent(String url) throws IOException {
         HttpURLConnection urlConnection = null;
         try {
             URL urlInstance = new URL(url);
@@ -32,21 +41,10 @@ public class JsonHttpRequest {
             bufferedInputReader.close();
             urlConnection.disconnect();
 
-            return new JSONObject(contentBuilder.toString());
-        } catch (MalformedURLException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        } catch (JSONException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            return contentBuilder.toString();
         } finally {
             urlConnection.disconnect();
         }
-
-        return null;
     }
 
 }
