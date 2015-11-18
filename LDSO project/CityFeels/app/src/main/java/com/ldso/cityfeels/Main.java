@@ -1,48 +1,51 @@
 package com.ldso.cityfeels;
 
 import android.content.Context;
-import android.location.Location;
-import android.location.LocationListener;
+import android.hardware.SensorManager;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-public class GPSListner extends AppCompatActivity {
+public class Main extends AppCompatActivity {
 
     TextView coords;
+    TextView orientation;
+    //GpsModule gpsModule;
+    OrientationModule orientationModule;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //gpsModule = new GpsModule();
+        orientationModule = new OrientationModule();
         setContentView(R.layout.activity_gpslistner);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         coords = (TextView) findViewById(R.id.coords);
+        orientation = (TextView) findViewById(R.id.orientation);
 
 
         try {
-            initLocation();
-            coords.setText("Getting coords.");
+            //Usar GPS sozinho ou Orientation(GPS + Bussola)
+            //gpsModule.GpsInit((LocationManager) getSystemService(Context.LOCATION_SERVICE), coords);
+
+            int returnVal = orientationModule.OrientationInit((LocationManager) getSystemService(Context.LOCATION_SERVICE), coords,
+                    (SensorManager) getSystemService(SENSOR_SERVICE), orientation);
+            if(returnVal == 0)
+               orientation.setText("Getting orientation...");
+            else if(returnVal == 1)
+                orientation.setText("No acelerometer sensor available");
+            else if(returnVal == 2)
+                orientation.setText("No magnetic fields sensor available");
+            coords.setText("Getting coords...");
         }
         catch(SecurityException e) {
             coords.setText("No authorisation provided.\nPlease enable GPS location and restart the application.");
         }
-    }
-
-    public void initLocation() throws SecurityException
-    {
-        // Acquire a reference to the system Location Manager
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
-            throw new SecurityException(); //Podemos fazer com que aqui se abra uma janela a perguntar se quer inciar a localização gps
-
-        // Register the listener with the Location Manager to receive location updates
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
     }
 
     @Override
@@ -67,20 +70,17 @@ public class GPSListner extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // Define a listener that responds to location updates
-    LocationListener locationListener = new LocationListener() {
-        public void onLocationChanged(Location location) {
-            // Called when a new location is found by the network location provider.
-            String lat = String.format("%f", location.getLatitude());
-            String lon = String.format("%f", location.getLongitude());
-            String coord = lat + " " + lon;
-            coords.setText(coord);
-        }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        orientationModule.Resume();
+        //gpsModule.Resume();
+    }
 
-        public void onStatusChanged(String provider, int status, Bundle extras) {}
-
-        public void onProviderEnabled(String provider) {}
-
-        public void onProviderDisabled(String provider) {}
-    };
+    @Override
+    protected void onPause() {
+        super.onPause();
+        orientationModule.Pause();
+        //gpsModule.Pause();
+    }
 }

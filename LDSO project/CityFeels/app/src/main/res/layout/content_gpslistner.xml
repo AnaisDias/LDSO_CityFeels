@@ -9,9 +9,24 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_gpslistner" tools:context=".GPSListner">
 
-    <TextView android:id="@+id/coords"
-        android:text="Hello World!" android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:weightSum="1">
+
+        <TextView android:id="@+id/coords"
+            android:text="Coordinates Placehorder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView android:id="@+id/orientation"
+            android:text="Orientation Placeholder"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="0.55" />
+    </LinearLayout>
 </RelativeLayout>
