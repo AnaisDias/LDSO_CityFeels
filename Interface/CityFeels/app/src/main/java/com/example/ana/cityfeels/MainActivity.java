@@ -146,7 +146,11 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             public void onClick(View v) {
                 IPontoInteresse poi = DataSource.getLastPointOfInterest();
                 if (poi != null)
-                    textToSpeech.speak(poi.getInformation(), TextToSpeech.QUEUE_ADD, null);
+                {
+                    int index = (int) (((poi.getOrientation() - orientationModule.getAzimuth() + 360) % 360) / 90);
+                    String text = poi.getInformation().replace("[ori]", INFO_ORIENTATION[index]);
+                    textToSpeech.speak(text, TextToSpeech.QUEUE_ADD, null);
+                }
             }
         });
     }

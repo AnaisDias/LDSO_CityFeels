@@ -34,16 +34,14 @@ public class JsonHttpRequest {
 
             String line;
             while((line = bufferedInputReader.readLine()) != null)
-            {
                 contentBuilder.append(line);
-            }
 
             bufferedInputReader.close();
-            urlConnection.disconnect();
 
             return contentBuilder.toString();
         } finally {
-            urlConnection.disconnect();
+            if(urlConnection != null)
+                urlConnection.disconnect();
         }
     }
 
