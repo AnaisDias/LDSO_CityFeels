@@ -39,7 +39,7 @@ public class DataSource {
                 if(layer == DataLayer.Local)
                     return pontoInteresse;
 
-                pontoInteresse = toDetailed((PontoInteresseLocal) pontoInteresse);
+                pontoInteresse = toDetailed(pi);
 
                 if(layer == DataLayer.Detailed)
                     return pontoInteresse;
@@ -71,9 +71,18 @@ public class DataSource {
         return new PontoInteresseLocal(posicao, informacao, arredoresArray);
     }
 
-    public static PontoInteresseDetailed toDetailed(PontoInteresseLocal pontoInteresse)
+    public static PontoInteresseDetailed toDetailed(PontoInteresse pontoInteresse)
     {
-        return null;
+        List<PontoInteresseBasic> arredoresList = new LinkedList<PontoInteresseBasic>();
+
+        for(PontoInteresse ponto : SIA.getCloseByPointsOfInterest(pontoInteresseBasic.posicao, MAX_DISTANCE_BETWEEN_POI))
+            arredoresList.add(PontoInteresseBasic.fromPontoInteresse(ponto));
+
+        Location posicao = pontoInteresse.posicao;
+        String informacao = pontoInteresse.infdetalhada;
+        PontoInteresseBasic[] arredoresArray = arredoresList.toArray(new PontoInteresseBasic[0]);
+
+        return new PontoInteresseDetailed(posicao, arredoresArray, informacao);
     }
 
 }

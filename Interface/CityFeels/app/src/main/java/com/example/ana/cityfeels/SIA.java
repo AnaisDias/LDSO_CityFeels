@@ -26,7 +26,8 @@ public class SIA {
         else
         {
             String about = response.getString("informacao");
-            return new PontoInteresse(location, about);
+            String detAbout = response.getString("infdetalhada");
+            return new PontoInteresse(location, about, detAbout);
         }
     }
 
@@ -44,10 +45,11 @@ public class SIA {
             for(int i = 0; i < results.length(); i++)
             {
                 JSONObject currentPoint = results.getJSONObject(i);
+                String infdetalhada = currentPoint.getString("infdetalhada");
                 String informacao = currentPoint.getString("informacao");
                 double latitude = currentPoint.getDouble("latitude");
                 double longitude = currentPoint.getDouble("longitude");
-                closeByPoints[i] = new PontoInteresse(new Location(latitude, longitude), informacao);
+                closeByPoints[i] = new PontoInteresse(new Location(latitude, longitude), informacao, infdetalhada);
             }
 
             return closeByPoints;
