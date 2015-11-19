@@ -11,16 +11,6 @@ public class PontoInteresseDetailed extends PontoInteresseLocal  {
 
         StringBuilder information = new StringBuilder(super.getInformation());
 
-        information.append(informacao);
-        
-        if(arredores.length > 0)
-        {
-            information.append(".\nPontos de interesse em redor:\n ");
-
-            for(PontoInteresseBasic ponto : arredores)
-                information.append(ponto.getInformation() + ".\n");
-        }
-
         return information.toString();
     }
 }
