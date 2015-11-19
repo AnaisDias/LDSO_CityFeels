@@ -1,6 +1,9 @@
 package com.example.ana.cityfeels;
 
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.SensorManager;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.speech.tts.TextToSpeech;
@@ -14,6 +17,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.ana.cityfeels.navigation.OrientationModule;
 import com.example.ana.cityfeels.sia.PontoInteresse;
 
 import java.io.IOException;
@@ -24,8 +28,15 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
     private final static int TEXT_TO_SPEECH_CHECK_CODE = 0;
     private static Location[] TEST_LOCATIONS;
+    private static String[] INFO_ORIENTATION;
+    private OrientationModule orientationModule;
 
     static {
+        INFO_ORIENTATION = new String[4];
+        INFO_ORIENTATION[0] = "À sua frente ";
+        INFO_ORIENTATION[1] = "À sua direita ";
+        INFO_ORIENTATION[2] = "Atrás de si ";
+        INFO_ORIENTATION[3] = "À sua esquerda ";
         TEST_LOCATIONS = new Location[3];
         TEST_LOCATIONS[0] = new Location(41.1654249, -8.6082677);
         TEST_LOCATIONS[1] = new Location(41.1654034, -8.6085272);
@@ -39,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        orientationModule = new OrientationModule();
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -57,6 +69,9 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         Intent checkTTSIntent = new Intent();
         checkTTSIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
         startActivityForResult(checkTTSIntent, TEXT_TO_SPEECH_CHECK_CODE);
+
+        orientationModule.OrientationInit((LocationManager) getSystemService(Context.LOCATION_SERVICE),
+                (SensorManager) getSystemService(SENSOR_SERVICE));
     }
 
     private void setGenerateLocationButtonListeners() {
@@ -170,6 +185,18 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        orientationModule.Resume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        orientationModule.Pause();
+    }
+
+    @Override
     public void onNewLocation(Location location) {
         Toast.makeText(this, location.toString(), Toast.LENGTH_LONG).show();
         IPontoInteresse pontoInteresse = null;
@@ -177,7 +204,9 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             pontoInteresse = DataSource.getPointOfInterest(location, this.currentInformationLayer);
             if(pontoInteresse != null)
             {
-                this.textToSpeech.speak(pontoInteresse.getInformation(), TextToSpeech.QUEUE_ADD, null);
+                int index = (int) (((pontoInteresse.getOrientation() - orientationModule.getAzimuth() + 360) % 360) / 90);
+                String text = pontoInteresse.getInformation().replace("[ori]", INFO_ORIENTATION[index]);
+                this.textToSpeech.speak(text, TextToSpeech.QUEUE_ADD, null);
             }
         } catch (IOException e) {
             Toast.makeText(this, "Erro ao conectar!", Toast.LENGTH_LONG).show();

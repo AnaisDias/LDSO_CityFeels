@@ -4,8 +4,8 @@ public class PontoInteresseLocal extends PontoInteresseBasic {
 
     public PontoInteresseBasic[] arredores;
 
-    public PontoInteresseLocal(Location local, String informacao, PontoInteresseBasic[] arredores) {
-        super(local, informacao);
+    public PontoInteresseLocal(Location local, String informacao, int orientacao, PontoInteresseBasic[] arredores) {
+        super(local, informacao, orientacao);
         this.arredores = arredores;
     }
 

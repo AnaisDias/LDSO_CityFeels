@@ -30,7 +30,7 @@ public class DataSource {
         try {
             PontoInteresse pi = SIA.getPointOfInterest(location);
 
-            pontoInteresse = new PontoInteresseBasic(pi.posicao, pi.informacao);
+            pontoInteresse = new PontoInteresseBasic(pi.posicao, pi.informacao, pi.orientacao);
 
             if(layer != DataLayer.Basic)
             {
@@ -66,9 +66,10 @@ public class DataSource {
 
         Location posicao = pontoInteresseBasic.posicao;
         String informacao = pontoInteresseBasic.informacao;
+        int orientacao = pontoInteresseBasic.orientacao;
         PontoInteresseBasic[] arredoresArray = arredoresList.toArray(new PontoInteresseBasic[0]);
 
-        return new PontoInteresseLocal(posicao, informacao, arredoresArray);
+        return new PontoInteresseLocal(posicao, informacao, orientacao, arredoresArray);
     }
 
     public static PontoInteresseDetailed toDetailed(PontoInteresseLocal pontoInteresse)
