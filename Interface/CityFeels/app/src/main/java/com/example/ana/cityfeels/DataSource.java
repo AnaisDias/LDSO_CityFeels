@@ -2,6 +2,7 @@ package com.example.ana.cityfeels;
 
 import com.example.ana.cityfeels.sia.PontoInteresse;
 import com.example.ana.cityfeels.sia.Percurso;
+import com.example.ana.cityfeels.sia.SIA;
 
 import org.json.JSONException;
 
@@ -17,7 +18,7 @@ public class DataSource {
         Basic, Local, Detailed, Another
     }
 
-    private final static int MAX_DISTANCE_BETWEEN_POI = 50;
+    private final static int MAX_METERS_BETWEEN_POI = 50;
     private static IPontoInteresse LAST_POINT_OF_INTEREST = null;
 
     public static IPontoInteresse getPointOfInterest(Location location, DataLayer layer) throws IOException {
@@ -61,7 +62,7 @@ public class DataSource {
     public static PontoInteresseLocal toLocal(PontoInteresseBasic pontoInteresseBasic) throws IOException, JSONException {
         List<PontoInteresseBasic> arredoresList = new LinkedList<PontoInteresseBasic>();
 
-        for(PontoInteresse ponto : SIA.getCloseByPointsOfInterest(pontoInteresseBasic.posicao, MAX_DISTANCE_BETWEEN_POI))
+        for(PontoInteresse ponto : SIA.getCloseByPointsOfInterest(pontoInteresseBasic.posicao, MAX_METERS_BETWEEN_POI))
             arredoresList.add(PontoInteresseBasic.fromPontoInteresse(ponto));
 
         Location posicao = pontoInteresseBasic.posicao;
@@ -76,7 +77,7 @@ public class DataSource {
     {
         List<PontoInteresseBasic> arredoresList = new LinkedList<PontoInteresseBasic>();
 
-        for(PontoInteresse ponto : SIA.getCloseByPointsOfInterest(pontoInteresseLocal.posicao, MAX_DISTANCE_BETWEEN_POI))
+        for(PontoInteresse ponto : SIA.getCloseByPointsOfInterest(pontoInteresseLocal.posicao, MAX_METERS_BETWEEN_POI))
             arredoresList.add(PontoInteresseBasic.fromPontoInteresse(ponto));
 
         Location posicao = pontoInteresseLocal.posicao;

@@ -1,4 +1,4 @@
-package com.example.ana.cityfeels.navigation;
+package com.example.ana.cityfeels.modules;
 
 import android.location.Location;
 import android.location.LocationListener;
@@ -7,9 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
-/**
- * Created by David on 16/11/2015.
- */
 public class GpsModule implements LocationListener {
 
     private static final int TWO_MINUTES = 1000 * 60 * 2;

@@ -1,4 +1,4 @@
-package com.example.ana.cityfeels.navigation;
+package com.example.ana.cityfeels.modules;
 
 import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
@@ -6,7 +6,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.LocationManager;
-import android.widget.TextView;
 
 /**
  * Created by David on 16/11/2015.

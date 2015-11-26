@@ -1,5 +1,7 @@
-package com.example.ana.cityfeels;
+package com.example.ana.cityfeels.sia;
 
+import com.example.ana.cityfeels.JsonHttpRequest;
+import com.example.ana.cityfeels.Location;
 import com.example.ana.cityfeels.sia.PontoInteresse;
 
 import org.json.JSONArray;

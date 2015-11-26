@@ -1,14 +1,11 @@
 package com.example.ana.cityfeels;
 
-import android.content.Context;
-import android.content.Intent;
-import android.hardware.SensorManager;
-import android.location.LocationManager;
+import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -17,19 +14,20 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.example.ana.cityfeels.navigation.OrientationModule;
-import com.example.ana.cityfeels.sia.PontoInteresse;
+import com.example.ana.cityfeels.modules.TextToSpeechModule;
 
 import java.io.IOException;
-import java.util.Locale;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener, LocationEventListener {
+public class MainActivity extends AppCompatActivity implements LocationEventListener {
 
-    private final static int TEXT_TO_SPEECH_CHECK_CODE = 0;
+    private static final String NULL_PONTO_INTERESSE_ERROR = "Não foi possível obter o ponto de interesse";
+
     private static Location[] TEST_LOCATIONS;
     private static String[] INFO_ORIENTATION;
-    private OrientationModule orientationModule;
+
+    private CityFeels application;
+    private TextToSpeechModule textToSpeech;
 
     static {
         INFO_ORIENTATION = new String[4];
@@ -43,17 +41,13 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         TEST_LOCATIONS[2] = new Location(41.1778791, -8.6001047);
     }
 
-    private DataSource.DataLayer currentInformationLayer = DataSource.DataLayer.Basic;
-    private TextToSpeech textToSpeech;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        orientationModule = new OrientationModule();
+        this.application = (CityFeels)getApplication();
+        this.textToSpeech = this.application.getTextToSpeechModule();
 
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
+        setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -61,17 +55,20 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         setLayerButtonsClickListeners();
         setGenerateLocationButtonListeners();
         setRepeatInstructionsButtonListener();
-        LocationEventDispatcher.registerOnNewLocation(this);
 
         View basicLayerButton = findViewById(R.id.button1);
         basicLayerButton.setPressed(true);
 
-        Intent checkTTSIntent = new Intent();
-        checkTTSIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-        startActivityForResult(checkTTSIntent, TEXT_TO_SPEECH_CHECK_CODE);
+        final View generateLocationButton = findViewById(R.id.generate_location_button);
+        generateLocationButton.setEnabled(false);
 
-        orientationModule.OrientationInit((LocationManager) getSystemService(Context.LOCATION_SERVICE),
-                (SensorManager) getSystemService(SENSOR_SERVICE));
+        this.textToSpeech.registerOnReady(new TextToSpeechModule.OnReadyListener() {
+            @Override
+            public void onReady() {
+                generateLocationButton.setEnabled(true);
+                LocationEventDispatcher.registerOnNewLocation(MainActivity.this);
+            }
+        });
     }
 
     private void setGenerateLocationButtonListeners() {
@@ -100,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 localLayerButton.setPressed(false);
                 detailedLayerButton.setPressed(false);
                 anotherLayerButton.setPressed(false);
-                setInformationLayer(DataSource.DataLayer.Basic);
+                application.setCurrentDataLayer(DataSource.DataLayer.Basic);
                 return true;
             }
         });
@@ -111,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 basicLayerButton.setPressed(false);
                 detailedLayerButton.setPressed(false);
                 anotherLayerButton.setPressed(false);
-                setInformationLayer(DataSource.DataLayer.Local);
+                application.setCurrentDataLayer(DataSource.DataLayer.Local);
                 return true;
             }
         });
@@ -122,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 localLayerButton.setPressed(false);
                 basicLayerButton.setPressed(false);
                 anotherLayerButton.setPressed(false);
-                setInformationLayer(DataSource.DataLayer.Detailed);
+                application.setCurrentDataLayer(DataSource.DataLayer.Detailed);
                 return true;
             }
         });
@@ -133,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 localLayerButton.setPressed(false);
                 basicLayerButton.setPressed(false);
                 detailedLayerButton.setPressed(false);
-                setInformationLayer(DataSource.DataLayer.Another);
+                application.setCurrentDataLayer(DataSource.DataLayer.Another);
                 return true;
             }
         });
@@ -145,25 +142,16 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             @Override
             public void onClick(View v) {
                 IPontoInteresse poi = DataSource.getLastPointOfInterest();
-                if (poi != null)
-                {
+                if (poi != null) {
+                    /*
                     int index = (int) (((poi.getOrientation() - orientationModule.getAzimuth() + 360) % 360) / 90);
                     String text = poi.getInformation().replace("[ori]", INFO_ORIENTATION[index]);
-                    textToSpeech.speak(text, TextToSpeech.QUEUE_ADD, null);
+                    */
+                    String text = poi.getInformation();
+                    textToSpeech.speak(text);
                 }
             }
         });
-    }
-
-    private void setInformationLayer(DataSource.DataLayer layer) {
-        switch(layer) {
-            case Basic: break;
-            case Local: break;
-            case Detailed: break;
-            case Another: break;
-        }
-
-        this.currentInformationLayer = layer;
     }
 
     @Override
@@ -188,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         return super.onOptionsItemSelected(item);
     }
 
+    /*
     @Override
     protected void onResume() {
         super.onResume();
@@ -199,57 +188,51 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         super.onPause();
         orientationModule.Pause();
     }
+    */
 
     @Override
-    public void onNewLocation(Location location) {
-        Toast.makeText(this, location.toString(), Toast.LENGTH_LONG).show();
-        IPontoInteresse pontoInteresse = null;
-        try {
-            pontoInteresse = DataSource.getPointOfInterest(location, this.currentInformationLayer);
-            if(pontoInteresse != null)
-            {
-                int index = (int) (((pontoInteresse.getOrientation() - orientationModule.getAzimuth() + 360) % 360) / 90);
-                String text = pontoInteresse.getInformation().replace("[ori]", INFO_ORIENTATION[index]);
-                this.textToSpeech.speak(text, TextToSpeech.QUEUE_ADD, null);
+    public void onNewLocation(final Location location) {
+        new AsyncTask<Void, Void, IPontoInteresse>() {
+
+            @Override
+            protected void onPreExecute() {
+                findViewById(R.id.generate_location_button).setEnabled(false);
             }
-        } catch (IOException e) {
-            Toast.makeText(this, "Erro ao conectar!", Toast.LENGTH_LONG).show();
-            System.out.println(e.getMessage());
-        }
-    }
 
-    @Override
-    public void onInit(int status) {
-        if(status == TextToSpeech.SUCCESS) {
-            this.textToSpeech.setLanguage(new Locale("pt", "BR"));
+            @Override
+            protected IPontoInteresse doInBackground(Void... params) {
+                IPontoInteresse pontoInteresse = null;
 
-            /*
-            Locale[] locales = Locale.getAvailableLocales();
-            List<Locale> localeList = new ArrayList<>();
-            for (Locale locale : locales) {
-                int res = this.textToSpeech.isLanguageAvailable(locale);
-                if (res == TextToSpeech.LANG_AVAILABLE) {
-                    localeList.add(locale);
+                if(location == null)
+                    Log.e("LOCATION", "Received a NULL location");
+                else {
+                    try {
+                        pontoInteresse = DataSource.getPointOfInterest(location, application.getCurrentDataLayer());
+                    } catch (IOException e) {
+                        Log.e("NETWORK", e.getMessage());
+                    }
                 }
-            }
-            */
 
-        }
-        else if (status == TextToSpeech.ERROR)
-            Toast.makeText(this, "Sorry! Text To Speech failed...", Toast.LENGTH_SHORT).show();
+                return pontoInteresse;
+            }
+
+            @Override
+            protected void onPostExecute(IPontoInteresse pontoInteresse) {
+                if(pontoInteresse == null)
+                    Toast.makeText(MainActivity.this, NULL_PONTO_INTERESSE_ERROR, Toast.LENGTH_LONG).show();
+                else
+                {
+                    /*
+                    int index = (int) (((pontoInteresse.getOrientation() - orientationModule.getAzimuth() + 360) % 360) / 90);
+                    String text = pontoInteresse.getInformation().replace("[ori]", INFO_ORIENTATION[index]);
+                    */
+                    String text = pontoInteresse.getInformation();
+                    textToSpeech.speak(text);
+                }
+
+                findViewById(R.id.generate_location_button).setEnabled(true);
+            }
+
+        }.execute();
     }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == TEXT_TO_SPEECH_CHECK_CODE) {
-            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
-                this.textToSpeech = new TextToSpeech(this, this);
-            }
-            else {
-                Intent installIntent = new Intent();
-                installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-                startActivity(installIntent);
-            }
-        }
-    }
-
 }
