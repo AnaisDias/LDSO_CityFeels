@@ -1,6 +1,5 @@
-package com.example.ana.cityfeels;
+package com.example.ana.cityfeels.activities;
 
-import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,18 +9,32 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.ana.cityfeels.CityFeels;
+import com.example.ana.cityfeels.DataSource;
+import com.example.ana.cityfeels.Direction;
+import com.example.ana.cityfeels.Item;
+import com.example.ana.cityfeels.Location;
+import com.example.ana.cityfeels.LocationEventDispatcher;
+import com.example.ana.cityfeels.LocationEventListener;
+import com.example.ana.cityfeels.R;
+import com.example.ana.cityfeels.models.PontoInteresse;
+import com.example.ana.cityfeels.models.Percurso;
 import com.example.ana.cityfeels.modules.TextToSpeechModule;
 
 import java.io.IOException;
-import java.util.Random;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements LocationEventListener {
 
     private static final String NULL_PONTO_INTERESSE_ERROR = "Não foi possível obter o ponto de interesse";
+    private static final String NULL_PERCURSO_ERROR = "Não foi possível obter o percurso";
 
     private static Location[] TEST_LOCATIONS;
     private static String[] INFO_ORIENTATION;
@@ -35,16 +48,20 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
         INFO_ORIENTATION[1] = "À sua direita ";
         INFO_ORIENTATION[2] = "Atrás de si ";
         INFO_ORIENTATION[3] = "À sua esquerda ";
-        TEST_LOCATIONS = new Location[3];
+        TEST_LOCATIONS = new Location[6];
         TEST_LOCATIONS[0] = new Location(41.1654249, -8.6082677);
         TEST_LOCATIONS[1] = new Location(41.1654034, -8.6085272);
         TEST_LOCATIONS[2] = new Location(41.1778791, -8.6001047);
+        TEST_LOCATIONS[3] = new Location(41.1776727, -8.5969448);
+        TEST_LOCATIONS[4] = new Location(41.1777009, -8.595009);
+        TEST_LOCATIONS[5] = new Location(41.1776968, -8.5944819);
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.application = (CityFeels)getApplication();
+        this.application = (CityFeels) getApplication();
         this.textToSpeech = this.application.getTextToSpeechModule();
 
         setContentView(R.layout.activity_main);
@@ -55,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
         setLayerButtonsClickListeners();
         setGenerateLocationButtonListeners();
         setRepeatInstructionsButtonListener();
+        populateSpinners();
+        setSpinnerOnItemSelectListeners();
 
         View basicLayerButton = findViewById(R.id.button1);
         basicLayerButton.setPressed(true);
@@ -76,10 +95,11 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
         generateLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Random random = new Random();
-                int index = random.nextInt(TEST_LOCATIONS.length);
 
-                LocationEventDispatcher.fireNewLocation(TEST_LOCATIONS[index]);
+                Spinner pontos = (Spinner) findViewById(R.id.pontos);
+                Item<Location, String> item = (Item<Location, String>) pontos.getSelectedItem();
+
+                LocationEventDispatcher.fireNewLocation(item.getValue());
             }
         });
     }
@@ -141,15 +161,82 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
         repeatInstructionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                IPontoInteresse poi = DataSource.getLastPointOfInterest();
-                if (poi != null) {
-                    /*
-                    int index = (int) (((poi.getOrientation() - orientationModule.getAzimuth() + 360) % 360) / 90);
-                    String text = poi.getInformation().replace("[ori]", INFO_ORIENTATION[index]);
-                    */
-                    String text = poi.getInformation();
-                    textToSpeech.speak(text);
+                textToSpeech.repeat();
+            }
+        });
+    }
+
+    private void populateSpinners() {
+        Spinner percursosSpinner = (Spinner) findViewById(R.id.percursos);
+
+        ArrayList<Item> percursosItems = new ArrayList<>();
+        percursosItems.add(new Item<Integer, String>(-1, "Nenhum"));
+        percursosItems.add(new Item<Integer, String>(3, "Bar-Parque"));
+
+        ArrayAdapter<Item> percursosAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, percursosItems);
+        percursosSpinner.setAdapter(percursosAdapter);
+
+        Spinner pontosSpinner = (Spinner) findViewById(R.id.pontos);
+
+        ArrayList<Item> pontosItems = new ArrayList<>();
+        pontosItems.add(new Item<Location, String>(new Location(41.1654249, -8.6082677), "Residência Jayme Rios de Sousa"));
+        pontosItems.add(new Item<Location, String>(new Location(41.1654034, -8.6085272), "Escola Secundária"));
+        pontosItems.add(new Item<Location, String>(new Location(41.1778791, -8.6001047), "Faculdade de Engenharia"));
+        pontosItems.add(new Item<Location, String>(new Location(41.1776727, -8.5969448), "Bar de estudantes"));
+        pontosItems.add(new Item<Location, String>(new Location(41.1777009, -8.595009), "Escadaria"));
+        pontosItems.add(new Item<Location, String>(new Location(41.1776968, -8.5944819), "Parque de estacionamento"));
+
+        ArrayAdapter<Item> pontosAdapter = new ArrayAdapter<Item>(this, android.R.layout.simple_spinner_dropdown_item, pontosItems);
+        pontosSpinner.setAdapter(pontosAdapter);
+    }
+
+    private void setSpinnerOnItemSelectListeners() {
+        Spinner percursos = (Spinner) findViewById(R.id.percursos);
+        percursos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(final AdapterView<?> parent, View view, int position, long id) {
+                Item<Integer, String> item = (Item) parent.getItemAtPosition(position);
+                final int percursoId = item.getValue();
+
+                if(percursoId == -1)
+                    application.setCurrentPercurso(null);
+                else
+                {
+                    new AsyncTask<Void, Void, Percurso>() {
+
+                        @Override
+                        public void onPreExecute() {
+                            parent.setEnabled(false);
+                        }
+
+                        @Override
+                        protected Percurso doInBackground(Void... params) {
+                            Percurso percurso = null;
+                            try {
+                                percurso = DataSource.getPercurso(percursoId);
+                            } catch (IOException e) {
+                                Log.e("NETWORK", e.getMessage());
+                            }
+
+                            return percurso;
+                        }
+
+                        @Override
+                        protected void onPostExecute(Percurso percurso) {
+                            if(percurso == null)
+                                Toast.makeText(MainActivity.this, NULL_PERCURSO_ERROR, Toast.LENGTH_LONG).show();
+                            else
+                                application.setCurrentPercurso(percurso);
+
+                            parent.setEnabled(true);
+                        }
+                    }.execute();
                 }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
     }
@@ -192,7 +279,7 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
 
     @Override
     public void onNewLocation(final Location location) {
-        new AsyncTask<Void, Void, IPontoInteresse>() {
+        new AsyncTask<Void, Void, String>() {
 
             @Override
             protected void onPreExecute() {
@@ -200,33 +287,43 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
             }
 
             @Override
-            protected IPontoInteresse doInBackground(Void... params) {
-                IPontoInteresse pontoInteresse = null;
+            protected String doInBackground(Void... params) {
+                StringBuilder stringBuilder = new StringBuilder();
 
-                if(location == null)
+                if (location == null)
                     Log.e("LOCATION", "Received a NULL location");
                 else {
                     try {
-                        pontoInteresse = DataSource.getPointOfInterest(location, application.getCurrentDataLayer());
+                        PontoInteresse pontoInteresse = DataSource.getPontoInteresse(location, application.getCurrentDataLayer());
+                        if (pontoInteresse == null)
+                            return null;
+
+                        stringBuilder.append(pontoInteresse.getInformacao());
+
+                        if(application.isRouteSelected())
+                        {
+                            Percurso currentPercurso = application.getCurrentPercurso();
+                            Direction directions = DataSource.getPercursoDirections(currentPercurso.getId(), pontoInteresse.getId());
+
+                            stringBuilder.append(directions.applyOrientation(0));
+                        }
                     } catch (IOException e) {
                         Log.e("NETWORK", e.getMessage());
                     }
                 }
 
-                return pontoInteresse;
+                return stringBuilder.toString();
             }
 
             @Override
-            protected void onPostExecute(IPontoInteresse pontoInteresse) {
-                if(pontoInteresse == null)
+            protected void onPostExecute(String text) {
+                if (text == null)
                     Toast.makeText(MainActivity.this, NULL_PONTO_INTERESSE_ERROR, Toast.LENGTH_LONG).show();
-                else
-                {
+                else {
                     /*
-                    int index = (int) (((pontoInteresse.getOrientation() - orientationModule.getAzimuth() + 360) % 360) / 90);
+                    int index = (int) (((pontoInteresse.getOrientacao() - orientationModule.getAzimuth() + 360) % 360) / 90);
                     String text = pontoInteresse.getInformation().replace("[ori]", INFO_ORIENTATION[index]);
                     */
-                    String text = pontoInteresse.getInformation();
                     textToSpeech.speak(text);
                 }
 
@@ -235,4 +332,5 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
 
         }.execute();
     }
+
 }

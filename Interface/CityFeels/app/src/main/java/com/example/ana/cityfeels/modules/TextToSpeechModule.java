@@ -14,6 +14,7 @@ public class TextToSpeechModule implements TextToSpeech.OnInitListener {
     private static final String TEXT_TO_SPEECH_INIT_ERROR = "Oops! Erro ao iniciar TextToSpeech!";
 
     private boolean isLoaded = false;
+    private String lastSpeech = null;
     private int status = -1;
     private Context context;
     private TextToSpeech textToSpeech;
@@ -78,7 +79,12 @@ public class TextToSpeechModule implements TextToSpeech.OnInitListener {
     }
 
     public void speak(String text) {
-        this.textToSpeech.speak(text, TextToSpeech.QUEUE_ADD, null);
+        this.textToSpeech.speak(this.lastSpeech = text, TextToSpeech.QUEUE_ADD, null);
+    }
+
+    public void repeat() {
+        if(this.lastSpeech != null)
+            this.textToSpeech.speak(this.lastSpeech, TextToSpeech.QUEUE_ADD, null);
     }
 
     public void registerOnReady(OnReadyListener listener) {

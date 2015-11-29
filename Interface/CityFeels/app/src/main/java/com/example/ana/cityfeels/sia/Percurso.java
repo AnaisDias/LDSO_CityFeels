@@ -1,20 +1,16 @@
 package com.example.ana.cityfeels.sia;
 
-import com.example.ana.cityfeels.Location;
-
 public class Percurso {
 
     public int id;
-    public Location startingLocation;
-    public Location endingLocation;
+    public int[] pontos;
 
     public Percurso() {}
 
-    public Percurso(int id, Location startingLocation, Location endingLocation)
+    public Percurso(int id, int[] pontos)
     {
         this.id = id;
-        this.startingLocation = startingLocation;
-        this.endingLocation = endingLocation;
+        this.pontos = pontos;
     }
 
 }

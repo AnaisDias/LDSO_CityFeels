@@ -1,10 +1,16 @@
-package com.example.ana.cityfeels;
+package com.example.ana.cityfeels.activities;
 
 import android.app.Instrumentation;
-import android.content.pm.ActivityInfo;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.TouchUtils;
 import android.widget.Button;
+
+import com.example.ana.cityfeels.CityFeels;
+import com.example.ana.cityfeels.DataSource;
+import com.example.ana.cityfeels.R;
+import com.example.ana.cityfeels.activities.MainActivity;
+
+import junit.framework.Assert;
 
 public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActivity> {
 
@@ -44,7 +50,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         Button anotherLayerButton = (Button)this.mainActivity.findViewById(R.id.button4);
 
         TouchUtils.clickView(this, anotherLayerButton);
-        assertEquals(this.application.getCurrentDataLayer(), DataSource.DataLayer.Another);
+        Assert.assertEquals(this.application.getCurrentDataLayer(), DataSource.DataLayer.Another);
         assertTrue(anotherLayerButton.isPressed());
         assertFalse(detailedLayerButton.isPressed());
         assertFalse(localLayerButton.isPressed());

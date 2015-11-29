@@ -4,6 +4,7 @@ import com.example.ana.cityfeels.Location;
 
 public class PontoInteresse {
 
+    public int id;
     public Location posicao;
     public String informacao;
     public int orientacao;
@@ -11,8 +12,9 @@ public class PontoInteresse {
 
     public PontoInteresse() {}
 
-    public PontoInteresse(Location local, String informacao, int orientacao, String infDetalhada)
+    public PontoInteresse(int id, Location local, String informacao, int orientacao, String infDetalhada)
     {
+        this.id = id;
         this.informacao = informacao;
         this.posicao = local;
         this.orientacao = orientacao;
