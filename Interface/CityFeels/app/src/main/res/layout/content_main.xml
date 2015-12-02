@@ -10,16 +10,6 @@
     tools:context=".activities.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Gerar"
-        android:id="@+id/generate_location_button"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/button"
-        android:layout_alignEnd="@+id/button" />
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -27,7 +17,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/linearLayout2">
+        android:id="@+id/linearLayout2"
+        android:weightSum="1">
 
         <View
             android:layout_width="match_parent"
@@ -47,7 +38,7 @@
             android:layout_above="@+id/linearLayout"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginBottom="23dp" />
+            android:layout_marginBottom="5dp" />
 
         <LinearLayout
             android:orientation="horizontal"
@@ -57,14 +48,13 @@
             android:id="@+id/linearLayout"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginBottom="10dp">
+            android:layout_alignParentEnd="true">
 
 
             <Button
                 android:layout_weight="1"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:text="BASICA"
                 android:id="@+id/button1"
@@ -73,7 +63,7 @@
             <Button
                 android:layout_weight="1"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:text="LOCAL"
                 android:id="@+id/button2"
@@ -82,7 +72,7 @@
             <Button
                 android:layout_weight="1"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:text="DETALHE"
                 android:id="@+id/button3"
@@ -91,7 +81,7 @@
             <Button
                 android:layout_weight="1"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
 
                 android:text="OUTRA"
                 android:id="@+id/button4"
@@ -155,42 +145,89 @@
 
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="View1"
-        android:id="@+id/textView2"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="View2"
-        android:id="@+id/button"
-        android:layout_above="@+id/linearLayout2"
-        android:layout_alignRight="@+id/linearLayout2"
-        android:layout_alignEnd="@+id/linearLayout2" />
-
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/percursos"
-        android:layout_below="@+id/generate_location_button"
-        android:layout_alignRight="@+id/button"
-        android:layout_alignEnd="@+id/button"
-        android:spinnerMode="dialog"/>
-
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/pontos"
-        android:layout_below="@+id/percursos"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:spinnerMode="dialog"/>
+        android:layout_above="@+id/linearLayout2"
+        android:layout_alignParentTop="true"
+        android:weightSum="1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="View1"
+            android:id="@+id/textView2"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_row="0"
+            android:layout_column="0" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gerar"
+            android:id="@+id/generate_location_button"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@+id/button"
+            android:layout_alignEnd="@+id/button"
+            android:layout_gravity="right"
+            android:layout_row="1"
+            android:layout_column="0" />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="29dp"
+            android:id="@+id/percursos"
+            android:layout_below="@+id/generate_location_button"
+            android:layout_alignRight="@+id/button"
+            android:layout_alignEnd="@+id/button"
+            android:spinnerMode="dialog"
+            android:layout_row="2"
+            android:layout_column="0" />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:id="@+id/pontos"
+            android:layout_below="@+id/percursos"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:spinnerMode="dialog"
+            android:layout_row="3"
+            android:layout_column="0" />
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </GridLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.81" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View2"
+            android:id="@+id/button"
+            android:layout_above="@+id/linearLayout2"
+            android:layout_alignRight="@+id/linearLayout2"
+            android:layout_alignEnd="@+id/linearLayout2"
+            android:layout_row="5"
+            android:layout_column="0"
+            android:layout_gravity="bottom|right" />
+
+    </LinearLayout>
 
 </RelativeLayout>

@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
         setGenerateLocationButtonListeners();
         setRepeatInstructionsButtonListener();
         populateSpinners();
-        setSpinnerOnItemSelectListeners();
+        //setSpinnerOnItemSelectListeners();
 
         View basicLayerButton = findViewById(R.id.button1);
         basicLayerButton.setPressed(true);
