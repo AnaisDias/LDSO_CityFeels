@@ -413,5 +413,4 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
 
 		}.execute();
 	}
-
 }

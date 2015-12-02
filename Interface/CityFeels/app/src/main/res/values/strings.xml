@@ -1,8 +1,12 @@
-<resources>
+﻿<resources>
     <string name="app_name">CityFeels</string>
     <string name="action_settings">Settings</string>
     <string name="turn_on_gps">Ligar a localização?</string>
     <string name="yes">Sim por favor</string>
     <string name="no">Não obrigado</string>
     <string name="gps_message">Por favor ligue a localização para disfrutar da aplicação na sua totalidade.</string>
+    <string name="title_activity_first">FirstActivity</string>
+    <string name="title_activity_second">SecondActivity</string>
+    <string name="title_activity_x">XActivity</string>
+    <string name="title_activity_main2">Main2Activity</string>
 </resources>
