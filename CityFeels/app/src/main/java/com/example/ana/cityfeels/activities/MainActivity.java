@@ -1,10 +1,13 @@
 package com.example.ana.cityfeels.activities;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.SensorManager;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -86,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
 		setLayerButtonsClickListeners();
 		setGenerateLocationButtonListeners();
 		setRepeatInstructionsButtonListener();
+		setMapButtonListeners();
 		populateSpinners();
 		setSpinnerOnItemSelectListeners();
 
@@ -94,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
 
 		final View generateLocationButton = findViewById(R.id.generate_location_button);
 		generateLocationButton.setEnabled(false);
+
 
 		this.textToSpeech.registerOnReady(new TextToSpeechModule.OnReadyListener()
 		{
@@ -106,6 +111,16 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
 		});
 	}
 
+	private void setMapButtonListeners(){
+		Button mapViewButton = (Button) findViewById(R.id.map_view_button);
+		mapViewButton.setOnClickListener( new View.OnClickListener(){
+			@Override
+			public void onClick(View view) {
+				Intent intent = new Intent(view.getContext(), MapsActivity.class);
+				startActivity(intent);
+			}
+		});
+	}
 	private void setGenerateLocationButtonListeners()
 	{
 		Button generateLocationButton = (Button) findViewById(R.id.generate_location_button);

@@ -220,7 +220,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="View2"
-            android:id="@+id/button"
+            android:id="@+id/map_view_button"
             android:layout_above="@+id/linearLayout2"
             android:layout_alignRight="@+id/linearLayout2"
             android:layout_alignEnd="@+id/linearLayout2"
