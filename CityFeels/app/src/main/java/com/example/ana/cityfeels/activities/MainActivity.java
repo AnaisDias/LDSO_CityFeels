@@ -34,11 +34,16 @@ import com.example.ana.cityfeels.models.PontoInteresse;
 import com.example.ana.cityfeels.models.Percurso;
 import com.example.ana.cityfeels.modules.OrientationModule;
 import com.example.ana.cityfeels.modules.TextToSpeechModule;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements LocationEventListener
+public class MainActivity extends AppCompatActivity implements LocationEventListener, OnMapReadyCallback
 {
 
 	private static final String NULL_PONTO_INTERESSE_ERROR = "Não foi possível obter o ponto de interesse";
@@ -92,6 +97,9 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
 		setMapButtonListeners();
 		populateSpinners();
 		setSpinnerOnItemSelectListeners();
+		MapFragment mapFragment = (MapFragment) getFragmentManager()
+				.findFragmentById(R.id.map);
+		mapFragment.getMapAsync(this);
 
 		View basicLayerButton = findViewById(R.id.button1);
 		basicLayerButton.setPressed(true);
@@ -111,6 +119,12 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
 		});
 	}
 
+	@Override
+	public void onMapReady(GoogleMap map) {
+		map.addMarker(new MarkerOptions()
+				.position(new LatLng(41.1654034, -8.6085272))
+				.title("Marker"));
+	}
 	private void setMapButtonListeners(){
 		Button mapViewButton = (Button) findViewById(R.id.map_view_button);
 		mapViewButton.setOnClickListener( new View.OnClickListener(){
