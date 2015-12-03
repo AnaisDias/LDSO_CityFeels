@@ -34,6 +34,7 @@ import com.example.ana.cityfeels.models.PontoInteresse;
 import com.example.ana.cityfeels.models.Percurso;
 import com.example.ana.cityfeels.modules.OrientationModule;
 import com.example.ana.cityfeels.modules.TextToSpeechModule;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -124,6 +125,8 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
 		map.addMarker(new MarkerOptions()
 				.position(new LatLng(41.1654034, -8.6085272))
 				.title("Marker"));
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(41.1654034, -8.6085272),14) );
+
 	}
 	private void setMapButtonListeners(){
 		Button mapViewButton = (Button) findViewById(R.id.map_view_button);
