@@ -1,5 +1,7 @@
 language: android
 script: ./CityFeels/gradlew.bat
+notifications:
+  slack: ldso2015g1:jwK6sZS7tJ0gfXAASdA5Ikaj
 android:
   components:
     # Uncomment the lines below if you want to
@@ -16,5 +18,4 @@ android:
     # Additional components
     - extra-google-google_play_services
 
-    notifications:
-  slack: ldso2015g1:jwK6sZS7tJ0gfXAASdA5Ikaj
+   
