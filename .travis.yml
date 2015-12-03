@@ -1,5 +1,5 @@
 language: android
-script: ./CityFeels/gradlew.bat
+script: cd ./CityFeels && gradlew 
 notifications:
   slack: ldso2015g1:jwK6sZS7tJ0gfXAASdA5Ikaj
 android:
