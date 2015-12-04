@@ -1,13 +1,11 @@
 package com.example.ana.cityfeels.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.SensorManager;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -121,23 +119,29 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
 	}
 
 	@Override
-	public void onMapReady(GoogleMap map) {
+	public void onMapReady(GoogleMap map)
+	{
 		map.addMarker(new MarkerOptions()
-				.position(new LatLng(41.1654034, -8.6085272))
-				.title("Marker"));
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(41.1654034, -8.6085272),14) );
+							  .position(new LatLng(41.1654034, -8.6085272))
+							  .title("Marker"));
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(41.1654034, -8.6085272), 14));
 
 	}
-	private void setMapButtonListeners(){
+
+	private void setMapButtonListeners()
+	{
 		Button mapViewButton = (Button) findViewById(R.id.map_view_button);
-		mapViewButton.setOnClickListener( new View.OnClickListener(){
+		mapViewButton.setOnClickListener(new View.OnClickListener()
+		{
 			@Override
-			public void onClick(View view) {
+			public void onClick(View view)
+			{
 				Intent intent = new Intent(view.getContext(), MapsActivity.class);
 				startActivity(intent);
 			}
 		});
 	}
+
 	private void setGenerateLocationButtonListeners()
 	{
 		Button generateLocationButton = (Button) findViewById(R.id.generate_location_button);
@@ -147,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
 			public void onClick(View view)
 			{
 
-				Spinner pontos = (Spinner) findViewById(R.id.pontos);
+				Spinner pontos = (Spinner) findViewById(R.id.destinos);
 				Item<Location, String> item = (Item<Location, String>) pontos.getSelectedItem();
 
 				LocationEventDispatcher.fireNewLocation(item.getValue());
@@ -231,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
 
 	private void populateSpinners()
 	{
-		Spinner percursosSpinner = (Spinner) findViewById(R.id.percursos);
+		Spinner percursosSpinner = (Spinner) findViewById(R.id.inicios);
 
 		ArrayList<Item> percursosItems = new ArrayList<>();
 		percursosItems.add(new Item<Integer, String>(-1, "Nenhum"));
@@ -242,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
 																 percursosItems);
 		percursosSpinner.setAdapter(percursosAdapter);
 
-		Spinner pontosSpinner = (Spinner) findViewById(R.id.pontos);
+		Spinner pontosSpinner = (Spinner) findViewById(R.id.destinos);
 
 		ArrayList<Item> pontosItems = new ArrayList<>();
 		pontosItems.add(new Item<Location, String>(new Location(41.1654249, -8.6082677),
@@ -266,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
 
 	private void setSpinnerOnItemSelectListeners()
 	{
-		Spinner percursos = (Spinner) findViewById(R.id.percursos);
+		Spinner percursos = (Spinner) findViewById(R.id.inicios);
 		percursos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
 			@Override

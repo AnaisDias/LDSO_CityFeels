@@ -203,7 +203,7 @@
                 <Spinner
                     android:layout_width="wrap_content"
                     android:layout_height="29dp"
-                    android:id="@+id/percursos"
+                    android:id="@+id/inicios"
                     android:layout_below="@+id/generate_location_button"
                     android:layout_alignRight="@+id/button"
                     android:layout_alignEnd="@+id/button"
@@ -214,8 +214,8 @@
                 <Spinner
                     android:layout_width="wrap_content"
                     android:layout_height="24dp"
-                    android:id="@+id/pontos"
-                    android:layout_below="@+id/percursos"
+                    android:id="@+id/destinos"
+                    android:layout_below="@+id/inicios"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
                     android:spinnerMode="dialog"

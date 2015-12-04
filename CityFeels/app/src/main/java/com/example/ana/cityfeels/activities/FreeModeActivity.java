@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -14,19 +11,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.example.ana.cityfeels.CityFeels;
-import com.example.ana.cityfeels.DataSource;
 import com.example.ana.cityfeels.Item;
 import com.example.ana.cityfeels.Location;
 import com.example.ana.cityfeels.R;
-import com.example.ana.cityfeels.models.Percurso;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.example.ana.cityfeels.sia.SIA;
+
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,8 +28,8 @@ public class FreeModeActivity extends AppCompatActivity /*implements OnMapReadyC
 
 	private static final String EXTRA_ROUTE = "com.ldso.cityfeels.ROUTE";
 	private CityFeels application;
-	private String spinner_inicio;
-	private String spinner_destino;
+	private Item<Location, String> spinner_inicio;
+	private Item<Location, String> spinner_destino;
 	private static final String NULL_PONTO_INTERESSE_ERROR = "Não foi possível obter o ponto de interesse";
 	private static final String NULL_PERCURSO_ERROR = "Não foi possível obter o percurso";
 
@@ -49,19 +41,19 @@ public class FreeModeActivity extends AppCompatActivity /*implements OnMapReadyC
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
-		Spinner percursosSpinner = (Spinner) findViewById(R.id.percursos);
-		Spinner pontosSpinner = (Spinner) findViewById(R.id.pontos);
-		percursosSpinner.setOnItemSelectedListener(onItemSelectedListener);
-		pontosSpinner.setOnItemSelectedListener(onItemSelectedListener);
+		Spinner iniciosSpinner = (Spinner) findViewById(R.id.inicios);
+		Spinner destinosSpinner = (Spinner) findViewById(R.id.destinos);
+		iniciosSpinner.setOnItemSelectedListener(onItemSelectedListener);
+		destinosSpinner.setOnItemSelectedListener(onItemSelectedListener);
 
-		populateSpinners();
+		populateSpinners(this);
 		/*MapFragment mapFragment = (MapFragment) getFragmentManager()
 				.findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);*/
 	}
 
    /* @Override
-    public void onMapReady(GoogleMap map) {
+	public void onMapReady(GoogleMap map) {
         map.addMarker(new MarkerOptions()
                 .position(new LatLng(41.1654034, -8.6085272))
                 .title("Marker"));
@@ -72,47 +64,85 @@ public class FreeModeActivity extends AppCompatActivity /*implements OnMapReadyC
 	 */
 	public void calcular(View view)
 	{
-		ArrayList<String> route = new ArrayList<>();
-		route.add(spinner_inicio);
-		route.add(spinner_destino);
-		Intent intent = new Intent(this, MainActivity.class).
-				putStringArrayListExtra(EXTRA_ROUTE, route);
+		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
 	}
 
-	private void populateSpinners()
+	private void populateSpinners(final Activity activity)
 	{
-		Spinner percursosSpinner = (Spinner) findViewById(R.id.percursos);
+		new AsyncTask<Void, Void, ArrayList<Item>>()
+		{
+			Spinner iniciosSpinner;
 
-		ArrayList<Item> percursosItems = new ArrayList<>();
-		percursosItems.add(new Item<Integer, String>(-1, "Inicio"));
-		percursosItems.add(new Item<Integer, String>(3, "Bar-Parque"));
+			@Override
+			protected void onPreExecute()
+			{
+				iniciosSpinner = (Spinner) findViewById(R.id.inicios);
+			}
 
-		ArrayAdapter<Item> percursosAdapter = new ArrayAdapter<>(this,
-																 android.R.layout.simple_spinner_dropdown_item,
-																 percursosItems);
-		percursosSpinner.setAdapter(percursosAdapter);
+			@Override
+			protected ArrayList<Item> doInBackground(Void... params)
+			{
+				ArrayList<Item> iniciosItems = null;
+				try
+				{
+					iniciosItems = SIA.getStartPoints();
+				} catch(IOException e)
+				{
+					e.printStackTrace();
+				} catch(JSONException e)
+				{
+					e.printStackTrace();
+				}
+				return iniciosItems;
+			}
 
-		Spinner pontosSpinner = (Spinner) findViewById(R.id.pontos);
+			@Override
+			protected void onPostExecute(ArrayList<Item> list)
+			{
+				ArrayAdapter<Item> iniciosAdapter = new ArrayAdapter<>(activity,
+																	   android.R.layout.simple_spinner_dropdown_item,
+																	   list);
+				iniciosSpinner.setAdapter(iniciosAdapter);
+			}
+		}.execute();
 
-		ArrayList<Item> pontosItems = new ArrayList<>();
-		pontosItems.add(
-				new Item<Location, String>(new Location(41.1654249, -8.6082677), "Destino"));
-		pontosItems.add(new Item<Location, String>(new Location(41.1654034, -8.6085272),
-												   "Escola Secundária"));
-		pontosItems.add(new Item<Location, String>(new Location(41.1778791, -8.6001047),
-												   "Faculdade de Engenharia"));
-		pontosItems.add(new Item<Location, String>(new Location(41.1776727, -8.5969448),
-												   "Bar de estudantes"));
-		pontosItems.add(
-				new Item<Location, String>(new Location(41.1777009, -8.595009), "Escadaria"));
-		pontosItems.add(new Item<Location, String>(new Location(41.1776968, -8.5944819),
-												   "Parque de estacionamento"));
+		new AsyncTask<Void, Void, ArrayList<Item>>()
+		{
+			Spinner destinosSpinner;
 
-		ArrayAdapter<Item> pontosAdapter = new ArrayAdapter<Item>(this,
-																  android.R.layout.simple_spinner_dropdown_item,
-																  pontosItems);
-		pontosSpinner.setAdapter(pontosAdapter);
+			@Override
+			protected void onPreExecute()
+			{
+				destinosSpinner = (Spinner) findViewById(R.id.destinos);
+			}
+
+			@Override
+			protected ArrayList<Item> doInBackground(Void... params)
+			{
+				ArrayList<Item> destinosItems = null;
+				try
+				{
+					destinosItems = SIA.getDestinations();
+				} catch(IOException e)
+				{
+					e.printStackTrace();
+				} catch(JSONException e)
+				{
+					e.printStackTrace();
+				}
+				return destinosItems;
+			}
+
+			@Override
+			protected void onPostExecute(ArrayList<Item> list)
+			{
+				ArrayAdapter<Item> destinosAdapter = new ArrayAdapter<>(activity,
+																		android.R.layout.simple_spinner_dropdown_item,
+																		list);
+				destinosSpinner.setAdapter(destinosAdapter);
+			}
+		}.execute();
 	}
 
 	public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener()
@@ -122,13 +152,13 @@ public class FreeModeActivity extends AppCompatActivity /*implements OnMapReadyC
 								   int position, long id)
 		{
 			Spinner spinner = (Spinner) parent;
-			if(spinner.getId() == R.id.percursos)
+			if(spinner.getId() == R.id.inicios)
 			{
-				spinner_inicio = (String) parent.getItemAtPosition(position);
+				spinner_inicio = (Item<Location, String>) parent.getSelectedItem();
 			}
-			else if(spinner.getId() == R.id.pontos)
+			else if(spinner.getId() == R.id.destinos)
 			{
-				spinner_destino = (String) parent.getItemAtPosition(position);
+				spinner_destino = (Item<Location, String>) parent.getSelectedItem();
 			}
 		}
 
