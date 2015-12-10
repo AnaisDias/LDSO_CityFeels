@@ -65,7 +65,7 @@
 
             <Spinner
                 android:layout_height="30dp"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:id="@+id/inicios"
                 android:layout_below="@+id/generate_location_button"
                 android:layout_alignRight="@+id/button"
@@ -75,8 +75,8 @@
                 android:spinnerMode="dialog" />
 
             <Spinner
-                android:layout_width="wrap_content"
-                android:layout_height="26dp"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
                 android:id="@+id/destinos"
                 android:layout_below="@+id/inicios"
                 android:spinnerMode="dialog"

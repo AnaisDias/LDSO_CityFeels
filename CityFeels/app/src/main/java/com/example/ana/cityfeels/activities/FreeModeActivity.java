@@ -24,11 +24,6 @@ import java.util.ArrayList;
 
 public class FreeModeActivity extends AppCompatActivity /*implements OnMapReadyCallback*/
 {
-
-	private static final String EXTRA_ROUTE = "com.ldso.cityfeels.ROUTE";
-	private static final String NULL_PONTO_INTERESSE_ERROR = "Não foi possível obter o ponto de interesse";
-	private static final String NULL_PERCURSO_ERROR = "Não foi possível obter o percurso";
-
 	private CityFeels application;
 	private Item<Location, String> spinner_inicio;
 	private Item<Location, String> spinner_destino;
@@ -43,21 +38,13 @@ public class FreeModeActivity extends AppCompatActivity /*implements OnMapReadyC
 
 		Spinner iniciosSpinner = (Spinner) findViewById(R.id.inicios);
 		Spinner destinosSpinner = (Spinner) findViewById(R.id.destinos);
+		iniciosSpinner.setEnabled(false);
+		destinosSpinner.setEnabled(false);
 		iniciosSpinner.setOnItemSelectedListener(onItemSelectedListener);
 		destinosSpinner.setOnItemSelectedListener(onItemSelectedListener);
 
-		populateSpinners(this);
-		/*MapFragment mapFragment = (MapFragment) getFragmentManager()
-				.findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);*/
+		populateSpinners();
 	}
-
-   /* @Override
-	public void onMapReady(GoogleMap map) {
-        map.addMarker(new MarkerOptions()
-                .position(new LatLng(41.1654034, -8.6085272))
-                .title("Marker"));
-    }*/
 
 	/**
 	 * Called when the user clicks the Calcular button
@@ -68,81 +55,57 @@ public class FreeModeActivity extends AppCompatActivity /*implements OnMapReadyC
 		startActivity(intent);
 	}
 
-	private void populateSpinners(final Activity activity)
+	private void populateSpinners()
 	{
-		new AsyncTask<Void, Void, ArrayList<Item>>()
+		new AsyncTask<Void, Void, Void>()
 		{
-			Spinner iniciosSpinner;
+			ArrayList<Item> pontosInicio = null;
+			ArrayList<Item> pontosFim = null;
 
 			@Override
-			protected void onPreExecute()
+			protected Void doInBackground(Void... params)
 			{
-				iniciosSpinner = (Spinner) findViewById(R.id.inicios);
-			}
-
-			@Override
-			protected ArrayList<Item> doInBackground(Void... params)
-			{
-				ArrayList<Item> iniciosItems = null;
-				try
-				{
-					iniciosItems = SIA.getStartPoints();
-				} catch(IOException e)
-				{
-					e.printStackTrace();
-				} catch(JSONException e)
+				try {
+					pontosInicio = SIA.getStartPoints();
+				} catch(Exception e)
 				{
 					e.printStackTrace();
 				}
-				return iniciosItems;
+
+				try {
+					pontosFim = SIA.getDestinations();
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+
+				return null;
 			}
 
 			@Override
-			protected void onPostExecute(ArrayList<Item> list)
+			protected void onPostExecute(Void results)
 			{
-				ArrayAdapter<Item> iniciosAdapter = new ArrayAdapter<>(activity,
+				pontosInicio.add(0, new Item<Location, String>(null, "Nenhum"));
+				pontosFim.add(0, new Item<Location, String>(null, "Nenhum"));
+
+				ArrayAdapter<Item> iniciosAdapter = new ArrayAdapter<>(FreeModeActivity.this,
 																	   android.R.layout.simple_spinner_dropdown_item,
-																	   list);
+																	   pontosInicio);
+
+				ArrayAdapter<Item> finsAdapter = new ArrayAdapter<>(FreeModeActivity.this,
+																	android.R.layout.simple_spinner_dropdown_item,
+																	pontosFim);
+
+				Spinner iniciosSpinner = (Spinner) findViewById(R.id.inicios);
+				Spinner finsSpinner = (Spinner) findViewById(R.id.destinos);
+
 				iniciosSpinner.setAdapter(iniciosAdapter);
+				finsSpinner.setAdapter(finsAdapter);
+				iniciosSpinner.setEnabled(true);
+				finsSpinner.setEnabled(true);
 			}
 		}.execute();
 
-		new AsyncTask<Void, Void, ArrayList<Item>>()
-		{
-			Spinner destinosSpinner;
-
-			@Override
-			protected void onPreExecute()
-			{
-				destinosSpinner = (Spinner) findViewById(R.id.destinos);
-			}
-
-			@Override
-			protected ArrayList<Item> doInBackground(Void... params)
-			{
-				ArrayList<Item> destinosItems = null;
-				try
-				{
-					destinosItems = SIA.getDestinations();
-				} catch(IOException e)
-				{
-					e.printStackTrace();
-				} catch(JSONException e)
-				{
-					e.printStackTrace();
-				}
-				return destinosItems;
-			}
-
-			@Override
-			protected void onPostExecute(ArrayList<Item> list)
-			{
-				ArrayAdapter<Item> destinosAdapter = new ArrayAdapter<>(activity,
-																		android.R.layout.simple_spinner_dropdown_item,
-																		list);
-				destinosSpinner.setAdapter(destinosAdapter);
-			}
-		}.execute();
 	}
 
 	public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener()
@@ -152,13 +115,15 @@ public class FreeModeActivity extends AppCompatActivity /*implements OnMapReadyC
 								   int position, long id)
 		{
 			Spinner spinner = (Spinner) parent;
+			Item<Location, String> selectedItem = (Item<Location, String>)spinner.getSelectedItem();
+
 			if(spinner.getId() == R.id.inicios)
 			{
-				spinner_inicio = (Item<Location, String>) parent.getSelectedItem();
+				spinner_inicio = selectedItem;
 			}
 			else if(spinner.getId() == R.id.destinos)
 			{
-				spinner_destino = (Item<Location, String>) parent.getSelectedItem();
+				spinner_destino = selectedItem;
 			}
 		}
 
