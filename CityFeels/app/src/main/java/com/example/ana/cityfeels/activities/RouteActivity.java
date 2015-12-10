@@ -1,7 +1,6 @@
 package com.example.ana.cityfeels.activities;
 
 import android.content.Context;
-import android.content.Intent;
 import android.hardware.SensorManager;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -42,7 +41,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements LocationEventListener, OnMapReadyCallback
+public class RouteActivity extends AppCompatActivity implements LocationEventListener, OnMapReadyCallback
 {
 
 	private static final String NULL_PONTO_INTERESSE_ERROR = "Não foi possível obter o ponto de interesse";
@@ -85,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
 				(LocationManager) getSystemService(Context.LOCATION_SERVICE),
 				(SensorManager) getSystemService(SENSOR_SERVICE));
 
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_route);
 
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
@@ -113,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
 			public void onReady()
 			{
 				generateLocationButton.setEnabled(true);
-				LocationEventDispatcher.registerOnNewLocation(MainActivity.this);
+				LocationEventDispatcher.registerOnNewLocation(RouteActivity.this);
 			}
 		});
 	}
@@ -130,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
 
 	private void setMapButtonListeners()
 	{
+		/*
 		Button mapViewButton = (Button) findViewById(R.id.map_view_button);
 		mapViewButton.setOnClickListener(new View.OnClickListener()
 		{
@@ -140,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
 				startActivity(intent);
 			}
 		});
+		*/
 	}
 
 	private void setGenerateLocationButtonListeners()
@@ -312,7 +313,7 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
 						protected void onPostExecute(Percurso percurso)
 						{
 							if(percurso == null)
-								Toast.makeText(MainActivity.this, NULL_PERCURSO_ERROR,
+								Toast.makeText(RouteActivity.this, NULL_PERCURSO_ERROR,
 											   Toast.LENGTH_LONG).show();
 							else
 								application.setCurrentPercurso(percurso);
@@ -437,7 +438,7 @@ public class MainActivity extends AppCompatActivity implements LocationEventList
 			protected void onPostExecute(String text)
 			{
 				if(text == null)
-					Toast.makeText(MainActivity.this, NULL_PONTO_INTERESSE_ERROR,
+					Toast.makeText(RouteActivity.this, NULL_PONTO_INTERESSE_ERROR,
 								   Toast.LENGTH_LONG).show();
 				else
 				{

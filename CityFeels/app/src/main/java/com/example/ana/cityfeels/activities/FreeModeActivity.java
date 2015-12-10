@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -27,17 +26,18 @@ public class FreeModeActivity extends AppCompatActivity /*implements OnMapReadyC
 {
 
 	private static final String EXTRA_ROUTE = "com.ldso.cityfeels.ROUTE";
+	private static final String NULL_PONTO_INTERESSE_ERROR = "Não foi possível obter o ponto de interesse";
+	private static final String NULL_PERCURSO_ERROR = "Não foi possível obter o percurso";
+
 	private CityFeels application;
 	private Item<Location, String> spinner_inicio;
 	private Item<Location, String> spinner_destino;
-	private static final String NULL_PONTO_INTERESSE_ERROR = "Não foi possível obter o ponto de interesse";
-	private static final String NULL_PERCURSO_ERROR = "Não foi possível obter o percurso";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_second);
+		setContentView(R.layout.activity_free_mode);
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
@@ -64,7 +64,7 @@ public class FreeModeActivity extends AppCompatActivity /*implements OnMapReadyC
 	 */
 	public void calcular(View view)
 	{
-		Intent intent = new Intent(this, MainActivity.class);
+		Intent intent = new Intent(this, RouteActivity.class);
 		startActivity(intent);
 	}
 

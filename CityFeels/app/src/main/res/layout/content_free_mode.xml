@@ -7,7 +7,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/activity_second" tools:context="com.example.ana.cityfeels.activities.FreeModeActivity">
+    tools:showIn="@layout/activity_free_mode" tools:context="com.example.ana.cityfeels.activities.FreeModeActivity">
 
     <LinearLayout
         android:orientation="vertical"
@@ -204,19 +204,6 @@
                         android:layout_gravity="center_horizontal"
                         android:id="@+id/radioGroupSound">
 
-                        <RadioButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Ouvir"
-                            android:id="@+id/radioOuvir"
-                            android:checked="false" />
-
-                        <RadioButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Silênciar"
-                            android:id="@+id/radioSilenciar"
-                            android:checked="false" />
                     </RadioGroup>
 
                 </LinearLayout>
@@ -229,6 +216,34 @@
                     android:background="@drawable/cena">
 
                 </ImageButton>
+
+                <Switch
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Som"
+                    android:id="@+id/switch1"
+                    android:layout_gravity="left|bottom"
+                    android:clickable="true"
+                    android:enabled="true"
+                    android:textOn="Ligado"
+                    android:textOff="Desligado"
+                    android:checked="true" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ouvir"
+                    android:id="@+id/radioOuvir"
+                    android:checked="false"
+                    android:layout_gravity="left|top" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Silênciar"
+                    android:id="@+id/radioSilenciar"
+                    android:checked="false"
+                    android:layout_gravity="left|center_vertical" />
 
             </FrameLayout>
 
