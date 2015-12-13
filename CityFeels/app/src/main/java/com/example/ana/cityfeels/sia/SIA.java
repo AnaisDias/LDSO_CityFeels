@@ -23,6 +23,28 @@ public class SIA
 	{
 	}
 
+	public static PontoInteresse[] getPontosInteresse() throws IOException, JSONException {
+		String url = WEB_SERVICE_POI_URL;
+
+		JSONArray result = JsonHttpRequest.getArray(url);
+		ArrayList<PontoInteresse> pontos = new ArrayList<>();
+
+		for(int i = 0; i < result.length(); i++) {
+			JSONObject ponto = result.getJSONObject(i);
+
+			int id = ponto.getInt("id");
+			String nome = ponto.getString("nome");
+			Location location = new Location(ponto.getDouble("latitude"), ponto.getDouble("longitude"));
+			String about = ponto.getString("informacao");
+			int orientation = ponto.getInt("orientacao");
+			String detAbout = ponto.getString("infdetalhada");
+
+			pontos.add(new PontoInteresse(id, nome, location, about, orientation, detAbout));
+		}
+
+		return pontos.toArray(new PontoInteresse[] {});
+	}
+
 	public static PontoInteresse getPontoInteresse(
 			Location location) throws JSONException, IOException
 	{
@@ -32,16 +54,13 @@ public class SIA
 
 		JSONObject response = JsonHttpRequest.getObject(url + queryString);
 
-		if(response == null)
-			return null;
-		else
-		{
-			int id = response.getInt("id");
-			String about = response.getString("informacao");
-			int orientation = response.getInt("orientacao");
-			String detAbout = response.getString("infdetalhada");
-			return new PontoInteresse(id, location, about, orientation, detAbout);
-		}
+		int id = response.getInt("id");
+		String nome = response.getString("nome");
+		String about = response.getString("informacao");
+		int orientation = response.getInt("orientacao");
+		String detAbout = response.getString("infdetalhada");
+
+		return new PontoInteresse(id, nome, location, about, orientation, detAbout);
 	}
 
 	public static PontoInteresse[] getCloseByPontoInteresse(Location location,
@@ -62,16 +81,44 @@ public class SIA
 			{
 				JSONObject currentPoint = results.getJSONObject(i);
 				int id = currentPoint.getInt("id");
+				String nome = currentPoint.getString("nome");
 				String infdetalhada = currentPoint.getString("infdetalhada");
 				String informacao = currentPoint.getString("informacao");
 				int orientacao = currentPoint.getInt("orientacao");
 				double latitude = currentPoint.getDouble("latitude");
 				double longitude = currentPoint.getDouble("longitude");
-				closeByPoints[i] = new PontoInteresse(id, new Location(latitude, longitude),
+				closeByPoints[i] = new PontoInteresse(id, nome, new Location(latitude, longitude),
 													  informacao, orientacao, infdetalhada);
 			}
 
 			return closeByPoints;
+		}
+	}
+
+	public static Percurso[] getPercursos() throws IOException, JSONException {
+		String url = WEB_SERVICE_PERCURSO_URL;
+
+		JSONArray result = JsonHttpRequest.getArray(url);
+		if(result == null)
+			return null;
+		else
+		{
+			ArrayList<Percurso> percursos = new ArrayList<>();
+
+			for(int i = 0; i < result.length(); i++) {
+				JSONObject percursoJson = result.getJSONObject(i);
+				JSONArray pontosJson = percursoJson.getJSONArray("pontos");
+
+				int id = percursoJson.getInt("id");
+				int[] pontos = new int[pontosJson.length()];
+
+				for(int index = 0; index < pontosJson.length(); index++)
+					pontos[index] = pontosJson.getInt(index);
+
+				percursos.add(i, new Percurso(id, pontos));
+			}
+
+			return percursos.toArray(new Percurso[] {});
 		}
 	}
 

@@ -7,248 +7,148 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".activities.RouteActivity"
-    tools:showIn="@layout/activity_route">
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/linearLayout2"
-        android:weightSum="1">
+    tools:context=".activities.RouteActivity">
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:weightSum="4"
-        android:id="@+id/linearLayout5"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
+        android:layout_height="match_parent"
+        android:layout_above="@+id/informacaoTextView"
+        android:layout_marginTop="10dp">
 
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
             android:name="com.google.android.gms.maps.MapFragment"
             android:id="@+id/map"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:layout="@layout/abc_screen_simple" />
-
-        </LinearLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:id="@+id/view"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Informação"
-            android:id="@+id/textView"
-            android:layout_above="@+id/linearLayout"
+            tools:layout="@layout/abc_screen_simple"
+            android:layout_below="@+id/radioGroupSound"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginBottom="5dp" />
+            android:layout_marginLeft="0dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp" />
+    </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:id="@+id/splitter"
+        android:layout_marginBottom="60dp"
+        android:layout_above="@+id/repeatButtonImage"
+        android:layout_alignRight="@+id/repeatButtonImage"
+        android:layout_alignEnd="@+id/repeatButtonImage" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Informação"
+        android:id="@+id/informacaoTextView"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/splitter"
+        android:layout_alignRight="@+id/repeatButtonImage" />
 
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:weightSum="4"
-                    android:id="@+id/linearLayout"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true">
+    <ImageButton
+        android:layout_width="113dp"
+        android:layout_height="93dp"
+        android:id="@+id/repeatButtonImage"
+        android:layout_gravity="right|center_vertical"
+        android:background="@drawable/cena"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
 
+    </ImageButton>
 
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Silênciar"
+        android:id="@+id/radioSilenciar"
+        android:checked="false"
+        android:layout_below="@+id/radioOuvir"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
-                    <Button
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="5dp"
-                        android:text="BASICA"
-                        android:id="@+id/button1"
-                        android:background="@drawable/buttonprincipal" />
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ouvir"
+        android:id="@+id/radioOuvir"
+        android:checked="false"
+        android:layout_alignTop="@+id/repeatButtonImage"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
-                    <Button
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="5dp"
-                        android:text="LOCAL"
-                        android:id="@+id/button2"
-                        android:background="@drawable/buttonprincipal" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/informacaoTextView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/repeatButtonImage">
 
-                    <Button
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="5dp"
-                        android:text="DETALHE"
-                        android:id="@+id/button3"
-                        android:background="@drawable/buttonprincipal" />
+        <Button
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BASICA"
+            android:id="@+id/button1"
+            android:background="@drawable/buttonprincipal"
+            android:layout_below="@+id/informacaoTextView"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp" />
 
-                    <Button
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-
-                        android:text="OUTRA"
-                        android:id="@+id/button4"
-                        android:background="@drawable/buttonprincipal" />
-
-                </LinearLayout>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginBottom="45dp">
-
-                    <LinearLayout
-                        android:layout_weight="3"
-                        android:orientation="vertical"
-                        android:layout_width="114dp"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:id="@+id/linearLayout3"
-                        android:gravity="center_vertical"
-                        android:layout_gravity="left|center_vertical">
-
-                        <RadioGroup
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:id="@+id/radioGroupSound">
-
-                            <RadioButton
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Ouvir"
-                                android:id="@+id/radioOuvir"
-                                android:checked="false" />
-
-                            <RadioButton
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Silênciar"
-                                android:id="@+id/radioSilenciar"
-                                android:checked="false" />
-                        </RadioGroup>
-
-                    </LinearLayout>
-
-                    <ImageButton
-                        android:layout_width="113dp"
-                        android:layout_height="93dp"
-                        android:id="@+id/imageButton"
-                        android:layout_gravity="right|center_vertical"
-                        android:background="@drawable/cena">
-
-                    </ImageButton>
-
-                </FrameLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_above="@+id/linearLayout2"
-                android:layout_alignParentTop="true"
-                android:weightSum="1">
-
-                <TextView
+        <Button
+                    android:layout_weight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="View1"
-                    android:id="@+id/textView2"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_row="0"
-                    android:layout_column="0" />
+            android:text="LOCAL"
+                    android:id="@+id/button2"
+                    android:background="@drawable/buttonprincipal"
+            android:layout_alignTop="@+id/splitter"
+            android:layout_toRightOf="@+id/button1"
+            android:layout_toEndOf="@+id/button1"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp" />
 
-                <Button
-                    style="?android:attr/buttonStyleSmall"
+        <Button
+                    android:layout_weight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Gerar"
-                    android:id="@+id/generate_location_button"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignRight="@+id/button"
-                    android:layout_alignEnd="@+id/button"
-                    android:layout_gravity="right"
-                    android:layout_row="1"
-                    android:layout_column="0" />
+            android:text="DETALHE"
+                    android:id="@+id/button3"
+                    android:background="@drawable/buttonprincipal"
+            android:layout_below="@+id/informacaoTextView"
+            android:layout_toRightOf="@+id/button2"
+            android:layout_toEndOf="@+id/button2"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp" />
 
-                <Spinner
-                    android:layout_width="wrap_content"
-                    android:layout_height="29dp"
-                    android:id="@+id/inicios"
-                    android:layout_below="@+id/generate_location_button"
-                    android:layout_alignRight="@+id/button"
-                    android:layout_alignEnd="@+id/button"
-                    android:spinnerMode="dialog"
-                    android:layout_row="2"
-                    android:layout_column="0" />
-
-                <Spinner
-                    android:layout_width="wrap_content"
-                    android:layout_height="24dp"
-                    android:id="@+id/destinos"
-                    android:layout_below="@+id/inicios"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    android:spinnerMode="dialog"
-                    android:layout_row="3"
-                    android:layout_column="0" />
-
-                <GridLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                </GridLayout>
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/imageView"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_weight="0.81" />
-
-                <Button
-                    style="?android:attr/buttonStyleSmall"
+        <Button
+                    android:layout_weight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="View2"
-                    android:id="@+id/map_view_button"
-                    android:layout_above="@+id/linearLayout2"
-                    android:layout_alignRight="@+id/linearLayout2"
-                    android:layout_alignEnd="@+id/linearLayout2"
-                    android:layout_row="5"
-                    android:layout_column="0"
-                    android:layout_gravity="bottom|right" />
 
-            </LinearLayout>
+                    android:text="OUTRA"
+                    android:id="@+id/button4"
+                    android:background="@drawable/buttonprincipal"
+            android:layout_alignTop="@+id/splitter"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp" />
+    </LinearLayout>
 
-        </RelativeLayout>
+</RelativeLayout>

@@ -85,7 +85,7 @@ public class DataSource
 		}
 	}
 
-	public static Direction getPercursoDirections(int percursoId,
+	public static Instructions getPercursoDirections(int percursoId,
 												  int pontoInteresseId) throws IOException
 	{
 		try
@@ -96,15 +96,14 @@ public class DataSource
 			if(siaDirection == null)
 				return null;
 
-			return new Direction(siaDirection.text, siaDirection.orientacao);
+			return new Instructions(siaDirection.text, siaDirection.orientacao);
 		} catch(JSONException e)
 		{
 			return null;
 		}
 	}
 
-	public static PontoInteresseLocal toLocal(
-			PontoInteresseBasic pontoInteresseBasic) throws IOException, JSONException
+	public static PontoInteresseLocal toLocal(PontoInteresseBasic pontoInteresseBasic) throws IOException, JSONException
 	{
 		List<PontoInteresseBasic> arredoresList = new LinkedList<PontoInteresseBasic>();
 

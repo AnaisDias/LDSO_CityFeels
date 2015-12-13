@@ -1,6 +1,6 @@
 package com.example.ana.cityfeels;
 
-public class Direction
+public class Instructions
 {
 
 	private static String[] INFO_ORIENTATION;
@@ -19,7 +19,7 @@ public class Direction
 		INFO_ORIENTATION[3] = "À sua esquerda";
 	}
 
-	public Direction(String text, int orientation)
+	public Instructions(String text, int orientation)
 	{
 		this.text = text;
 		this.orientation = orientation;

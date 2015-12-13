@@ -6,4 +6,5 @@
     <string name="no">Nao obrigado</string>
     <string name="gps_message">Por favor ligue a localizacao para disfrutar da aplicacao na sua totalidade.</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_test">TestActivity</string>
 </resources>

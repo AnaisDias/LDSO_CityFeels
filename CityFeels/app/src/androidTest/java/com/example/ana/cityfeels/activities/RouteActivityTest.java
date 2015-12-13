@@ -49,28 +49,28 @@ public class RouteActivityTest extends ActivityInstrumentationTestCase2<RouteAct
         Button anotherLayerButton = (Button)this.routeActivity.findViewById(R.id.button4);
 
         TouchUtils.clickView(this, anotherLayerButton);
-        Assert.assertEquals(this.application.getCurrentDataLayer(), DataSource.DataLayer.Another);
+        Assert.assertEquals(DataSource.DataLayer.Another, this.application.getCurrentDataLayer());
         assertTrue(anotherLayerButton.isPressed());
         assertFalse(detailedLayerButton.isPressed());
         assertFalse(localLayerButton.isPressed());
         assertFalse(basicLayerButton.isPressed());
 
         TouchUtils.clickView(this, detailedLayerButton);
-        assertEquals(this.application.getCurrentDataLayer(), DataSource.DataLayer.Detailed);
+        assertEquals(DataSource.DataLayer.Detailed, this.application.getCurrentDataLayer());
         assertTrue(detailedLayerButton.isPressed());
         assertFalse(anotherLayerButton.isPressed());
         assertFalse(localLayerButton.isPressed());
         assertFalse(basicLayerButton.isPressed());
 
         TouchUtils.clickView(this, localLayerButton);
-        assertEquals(this.application.getCurrentDataLayer(), DataSource.DataLayer.Local);
+        assertEquals(DataSource.DataLayer.Local, this.application.getCurrentDataLayer());
         assertTrue(localLayerButton.isPressed());
         assertFalse(anotherLayerButton.isPressed());
         assertFalse(detailedLayerButton.isPressed());
         assertFalse(basicLayerButton.isPressed());
 
         TouchUtils.clickView(this, basicLayerButton);
-        assertEquals(this.application.getCurrentDataLayer(), DataSource.DataLayer.Basic);
+        assertEquals(DataSource.DataLayer.Basic, this.application.getCurrentDataLayer());
         assertTrue(basicLayerButton.isPressed());
         assertFalse(detailedLayerButton.isPressed());
         assertFalse(localLayerButton.isPressed());

@@ -1,6 +1,5 @@
 package com.example.ana.cityfeels.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,33 +8,74 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.example.ana.cityfeels.CityFeels;
+import com.example.ana.cityfeels.EventDispatcher;
 import com.example.ana.cityfeels.Item;
 import com.example.ana.cityfeels.Location;
 import com.example.ana.cityfeels.R;
 import com.example.ana.cityfeels.sia.SIA;
 
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.util.ArrayList;
 
-public class FreeModeActivity extends AppCompatActivity /*implements OnMapReadyCallback*/
+public class FreeModeActivity extends AppCompatActivity implements EventDispatcher.OnNewInstructionsEventListener
 {
 	private CityFeels application;
-	private Item<Location, String> spinner_inicio;
-	private Item<Location, String> spinner_destino;
+	private Item<Location, String> spinner_inicio = null;
+	private Item<Location, String> spinner_destino = null;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_free_mode);
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
+        this.application = (CityFeels) getApplication();
 
+		initiateSpinners();
+		initiateButtons();
+
+		EventDispatcher.removeOnNewInstructions(this);
+	}
+
+	@Override
+	public void onNewInstructions(String newInstructions) {
+		TextView view = (TextView) findViewById(R.id.modoLivreDirecoes);
+        view.setText(newInstructions);
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+
+		TextView instructions = (TextView) findViewById(R.id.modoLivreDirecoes);
+        instructions.setText(application.getLastInstructions());
+
+		EventDispatcher.registerOnNewInstructions(this);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		EventDispatcher.removeOnNewInstructions(this);
+	}
+
+	private void initiateButtons() {
+		Button testButton = (Button) findViewById(R.id.testButton);
+		testButton.setOnClickListener(new View.OnClickListener() {
+			  @Override
+			  public void onClick(View v) {
+				  Intent intent = new Intent(FreeModeActivity.this, TestActivity.class);
+				  startActivity(intent);
+			  }
+		  }
+		);
+	}
+
+	private void initiateSpinners() {
 		Spinner iniciosSpinner = (Spinner) findViewById(R.id.inicios);
 		Spinner destinosSpinner = (Spinner) findViewById(R.id.destinos);
 		iniciosSpinner.setEnabled(false);
@@ -46,17 +86,7 @@ public class FreeModeActivity extends AppCompatActivity /*implements OnMapReadyC
 		populateSpinners();
 	}
 
-	/**
-	 * Called when the user clicks the Calcular button
-	 */
-	public void calcular(View view)
-	{
-		Intent intent = new Intent(this, RouteActivity.class);
-		startActivity(intent);
-	}
-
-	private void populateSpinners()
-	{
+	private void populateSpinners() {
 		new AsyncTask<Void, Void, Void>()
 		{
 			ArrayList<Item> pontosInicio = null;
@@ -108,6 +138,14 @@ public class FreeModeActivity extends AppCompatActivity /*implements OnMapReadyC
 
 	}
 
+	/**
+	 * Called when the user clicks the Calcular button
+	 */
+	public void calcular(View view) {
+		Intent intent = new Intent(this, RouteActivity.class);
+		startActivity(intent);
+	}
+
 	public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener()
 	{
 		@Override
@@ -133,5 +171,4 @@ public class FreeModeActivity extends AppCompatActivity /*implements OnMapReadyC
 			// your code here
 		}
 	};
-
 }

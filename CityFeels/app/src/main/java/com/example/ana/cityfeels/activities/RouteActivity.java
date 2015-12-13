@@ -3,32 +3,20 @@ package com.example.ana.cityfeels.activities;
 import android.content.Context;
 import android.hardware.SensorManager;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.example.ana.cityfeels.CityFeels;
 import com.example.ana.cityfeels.DataSource;
-import com.example.ana.cityfeels.Direction;
-import com.example.ana.cityfeels.Item;
 import com.example.ana.cityfeels.Location;
-import com.example.ana.cityfeels.LocationEventDispatcher;
-import com.example.ana.cityfeels.LocationEventListener;
 import com.example.ana.cityfeels.R;
-import com.example.ana.cityfeels.models.PontoInteresse;
-import com.example.ana.cityfeels.models.Percurso;
 import com.example.ana.cityfeels.modules.OrientationModule;
 import com.example.ana.cityfeels.modules.TextToSpeechModule;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -38,10 +26,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
-public class RouteActivity extends AppCompatActivity implements LocationEventListener, OnMapReadyCallback
+public class RouteActivity extends AppCompatActivity implements OnMapReadyCallback
 {
 
 	private static final String NULL_PONTO_INTERESSE_ERROR = "Não foi possível obter o ponto de interesse";
@@ -90,31 +75,14 @@ public class RouteActivity extends AppCompatActivity implements LocationEventLis
 		setSupportActionBar(toolbar);
 
 		setLayerButtonsClickListeners();
-		setGenerateLocationButtonListeners();
 		setRepeatInstructionsButtonListener();
 		setMapButtonListeners();
-		populateSpinners();
-		setSpinnerOnItemSelectListeners();
 		MapFragment mapFragment = (MapFragment) getFragmentManager()
 				.findFragmentById(R.id.map);
 		mapFragment.getMapAsync(this);
 
 		View basicLayerButton = findViewById(R.id.button1);
 		basicLayerButton.setPressed(true);
-
-		final View generateLocationButton = findViewById(R.id.generate_location_button);
-		generateLocationButton.setEnabled(false);
-
-
-		this.textToSpeech.registerOnReady(new TextToSpeechModule.OnReadyListener()
-		{
-			@Override
-			public void onReady()
-			{
-				generateLocationButton.setEnabled(true);
-				LocationEventDispatcher.registerOnNewLocation(RouteActivity.this);
-			}
-		});
 	}
 
 	@Override
@@ -141,23 +109,6 @@ public class RouteActivity extends AppCompatActivity implements LocationEventLis
 			}
 		});
 		*/
-	}
-
-	private void setGenerateLocationButtonListeners()
-	{
-		Button generateLocationButton = (Button) findViewById(R.id.generate_location_button);
-		generateLocationButton.setOnClickListener(new View.OnClickListener()
-		{
-			@Override
-			public void onClick(View view)
-			{
-
-				Spinner pontos = (Spinner) findViewById(R.id.destinos);
-				Item<Location, String> item = (Item<Location, String>) pontos.getSelectedItem();
-
-				LocationEventDispatcher.fireNewLocation(item.getValue());
-			}
-		});
 	}
 
 	private void setLayerButtonsClickListeners()
@@ -206,11 +157,9 @@ public class RouteActivity extends AppCompatActivity implements LocationEventLis
 				return true;
 			}
 		});
-		anotherLayerButton.setOnTouchListener(new View.OnTouchListener()
-		{
+		anotherLayerButton.setOnTouchListener(new View.OnTouchListener() {
 			@Override
-			public boolean onTouch(View v, MotionEvent event)
-			{
+			public boolean onTouch(View v, MotionEvent event) {
 				v.setPressed(true);
 				localLayerButton.setPressed(false);
 				basicLayerButton.setPressed(false);
@@ -223,111 +172,11 @@ public class RouteActivity extends AppCompatActivity implements LocationEventLis
 
 	private void setRepeatInstructionsButtonListener()
 	{
-		ImageButton repeatInstructionsButton = (ImageButton) findViewById(R.id.imageButton);
-		repeatInstructionsButton.setOnClickListener(new View.OnClickListener()
-		{
+		ImageButton repeatInstructionsButton = (ImageButton) findViewById(R.id.repeatButtonImage);
+		repeatInstructionsButton.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View v)
-			{
+			public void onClick(View v) {
 				textToSpeech.repeat();
-			}
-		});
-	}
-
-	private void populateSpinners()
-	{
-		Spinner percursosSpinner = (Spinner) findViewById(R.id.inicios);
-
-		ArrayList<Item> percursosItems = new ArrayList<>();
-		percursosItems.add(new Item<Integer, String>(-1, "Nenhum"));
-		percursosItems.add(new Item<Integer, String>(3, "Bar-Parque"));
-
-		ArrayAdapter<Item> percursosAdapter = new ArrayAdapter<>(this,
-																 android.R.layout.simple_spinner_dropdown_item,
-																 percursosItems);
-		percursosSpinner.setAdapter(percursosAdapter);
-
-		Spinner pontosSpinner = (Spinner) findViewById(R.id.destinos);
-
-		ArrayList<Item> pontosItems = new ArrayList<>();
-		pontosItems.add(new Item<Location, String>(new Location(41.1654249, -8.6082677),
-												   "Residência Jayme Rios de Sousa"));
-		pontosItems.add(new Item<Location, String>(new Location(41.1654034, -8.6085272),
-												   "Escola Secundária"));
-		pontosItems.add(new Item<Location, String>(new Location(41.1778791, -8.6001047),
-												   "Faculdade de Engenharia"));
-		pontosItems.add(new Item<Location, String>(new Location(41.1776727, -8.5969448),
-												   "Bar de estudantes"));
-		pontosItems.add(
-				new Item<Location, String>(new Location(41.1777009, -8.595009), "Escadaria"));
-		pontosItems.add(new Item<Location, String>(new Location(41.1776968, -8.5944819),
-												   "Parque de estacionamento"));
-
-		ArrayAdapter<Item> pontosAdapter = new ArrayAdapter<Item>(this,
-																  android.R.layout.simple_spinner_dropdown_item,
-																  pontosItems);
-		pontosSpinner.setAdapter(pontosAdapter);
-	}
-
-	private void setSpinnerOnItemSelectListeners()
-	{
-		Spinner percursos = (Spinner) findViewById(R.id.inicios);
-		percursos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-		{
-			@Override
-			public void onItemSelected(final AdapterView<?> parent, View view, int position,
-									   long id)
-			{
-				Item<Integer, String> item = (Item) parent.getItemAtPosition(position);
-				final int percursoId = item.getValue();
-
-				if(percursoId == -1)
-					application.setCurrentPercurso(null);
-				else
-				{
-					new AsyncTask<Void, Void, Percurso>()
-					{
-
-						@Override
-						public void onPreExecute()
-						{
-							parent.setEnabled(false);
-						}
-
-						@Override
-						protected Percurso doInBackground(Void... params)
-						{
-							Percurso percurso = null;
-							try
-							{
-								percurso = DataSource.getPercurso(percursoId);
-							} catch(IOException e)
-							{
-								Log.e("NETWORK", e.getMessage());
-							}
-
-							return percurso;
-						}
-
-						@Override
-						protected void onPostExecute(Percurso percurso)
-						{
-							if(percurso == null)
-								Toast.makeText(RouteActivity.this, NULL_PERCURSO_ERROR,
-											   Toast.LENGTH_LONG).show();
-							else
-								application.setCurrentPercurso(percurso);
-
-							parent.setEnabled(true);
-						}
-					}.execute();
-				}
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent)
-			{
-
 			}
 		});
 	}
@@ -365,89 +214,8 @@ public class RouteActivity extends AppCompatActivity implements LocationEventLis
 	}
 
 	@Override
-	protected void onPause()
-	{
+	protected void onPause() {
 		super.onPause();
 		orientationModule.Pause();
-	}
-
-	@Override
-	public void onNewLocation(final Location location)
-	{
-		new AsyncTask<Void, Void, String>()
-		{
-
-			@Override
-			protected void onPreExecute()
-			{
-				findViewById(R.id.generate_location_button).setEnabled(false);
-			}
-
-			@Override
-			protected String doInBackground(Void... params)
-			{
-				StringBuilder stringBuilder = new StringBuilder();
-
-				if(location == null)
-					Log.e("LOCATION", "Received a NULL location");
-				else
-				{
-					try
-					{
-						PontoInteresse pontoInteresse = DataSource.getPontoInteresse(location,
-																					 application.getCurrentDataLayer());
-						if(pontoInteresse == null)
-							return null;
-
-						Float azimuth = orientationModule.getAzimuth();
-						String text = "";
-						if(azimuth != null)
-						{
-							int index = (int) (((pontoInteresse.getOrientacao() - azimuth + 360) % 360) / 90);
-							text = pontoInteresse.getInformacao().replace("[ori]",
-																		  INFO_ORIENTATION[index]);
-						}
-						else
-						{
-							text = pontoInteresse.getInformacao().replace("[ori]",
-																		  INFO_ORIENTATION_DEFAULT);
-						}
-						stringBuilder.append(text);
-
-						if(application.isRouteSelected())
-						{
-							Percurso currentPercurso = application.getCurrentPercurso();
-							Direction directions = DataSource.getPercursoDirections(
-									currentPercurso.getId(), pontoInteresse.getId());
-
-							if(directions != null)
-							{
-								stringBuilder.append(directions.applyOrientation(azimuth));
-							}
-						}
-					} catch(IOException e)
-					{
-						Log.e("NETWORK", e.getMessage());
-					}
-				}
-
-				return stringBuilder.toString();
-			}
-
-			@Override
-			protected void onPostExecute(String text)
-			{
-				if(text == null)
-					Toast.makeText(RouteActivity.this, NULL_PONTO_INTERESSE_ERROR,
-								   Toast.LENGTH_LONG).show();
-				else
-				{
-					textToSpeech.speak(text);
-				}
-
-				findViewById(R.id.generate_location_button).setEnabled(true);
-			}
-
-		}.execute();
 	}
 }
