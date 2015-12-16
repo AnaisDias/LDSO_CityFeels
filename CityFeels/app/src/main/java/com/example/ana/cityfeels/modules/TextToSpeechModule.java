@@ -8,18 +8,22 @@ import android.widget.Toast;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class TextToSpeechModule implements TextToSpeech.OnInitListener {
 
     private static final String TEXT_TO_SPEECH_INIT_ERROR = "Oops! Erro ao iniciar TextToSpeech!";
 
     private boolean isLoaded = false;
+    private boolean enabled = true;
     private String lastSpeech = null;
     private int status = -1;
     private Context context;
     private TextToSpeech textToSpeech;
     private Locale preferredLanguage;
     private List<OnReadyListener> readyListeners = new LinkedList<>();
+
+    private final Object readyWaitHandle = new Object();
 
     public TextToSpeechModule(Context context, Locale language) {
         this.context = context;
@@ -79,12 +83,42 @@ public class TextToSpeechModule implements TextToSpeech.OnInitListener {
     }
 
     public void speak(String text) {
-        this.textToSpeech.speak(this.lastSpeech = text, TextToSpeech.QUEUE_ADD, null);
+        if(this.enabled)
+            this.textToSpeech.speak(this.lastSpeech = text, TextToSpeech.QUEUE_ADD, null);
+    }
+
+    public void disable() {
+        this.textToSpeech.stop();
+        this.enabled = false;
+    }
+
+    public void enable() {
+        this.enabled = true;
+    }
+
+    public boolean isEnabled() {
+        return this.enabled;
+    }
+
+    public boolean isSpeaking() {
+        return this.textToSpeech.isSpeaking();
     }
 
     public void repeat() {
         if(this.lastSpeech != null)
             this.textToSpeech.speak(this.lastSpeech, TextToSpeech.QUEUE_ADD, null);
+    }
+
+    public boolean waitUntilReady() {
+        synchronized (this.readyWaitHandle) {
+            try {
+                this.readyWaitHandle.wait();
+                return true;
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return false;
+            }
+        }
     }
 
     public void registerOnReady(OnReadyListener listener) {

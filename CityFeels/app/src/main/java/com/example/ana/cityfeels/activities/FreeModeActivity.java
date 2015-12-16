@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,6 +14,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.ana.cityfeels.CityFeels;
+import com.example.ana.cityfeels.DataSource;
 import com.example.ana.cityfeels.EventDispatcher;
 import com.example.ana.cityfeels.Item;
 import com.example.ana.cityfeels.Location;
@@ -38,7 +40,8 @@ public class FreeModeActivity extends AppCompatActivity implements EventDispatch
 		initiateSpinners();
 		initiateButtons();
 
-		EventDispatcher.removeOnNewInstructions(this);
+        this.setState(this.application);
+		EventDispatcher.registerOnNewInstructions(this);
 	}
 
 	@Override
@@ -50,10 +53,7 @@ public class FreeModeActivity extends AppCompatActivity implements EventDispatch
 	@Override
 	public void onResume() {
 		super.onResume();
-
-		TextView instructions = (TextView) findViewById(R.id.modoLivreDirecoes);
-        instructions.setText(application.getLastInstructions());
-
+        setState(this.application);
 		EventDispatcher.registerOnNewInstructions(this);
 	}
 
@@ -63,16 +63,96 @@ public class FreeModeActivity extends AppCompatActivity implements EventDispatch
 		EventDispatcher.removeOnNewInstructions(this);
 	}
 
+    private void setState(CityFeels application) {
+        TextView instructions = (TextView) findViewById(R.id.modoLivreDirecoes);
+        instructions.setText(application.getLastInstructions());
+
+        DataSource.DataLayer layer = this.application.getCurrentDataLayer();
+        switch(layer) {
+            case Another:
+                findViewById(R.id.button4).setPressed(true);
+                break;
+
+            case Detailed:
+                findViewById(R.id.button3).setPressed(true);
+                break;
+
+            case Local:
+                findViewById(R.id.button2).setPressed(true);
+                break;
+
+            default:
+                findViewById(R.id.button1).setPressed(true);
+        }
+    }
+
+	private void setLayerButtonsClickListeners() {
+		final Button basicLayerButton = (Button) findViewById(R.id.button1);
+		final Button localLayerButton = (Button) findViewById(R.id.button2);
+		final Button detailedLayerButton = (Button) findViewById(R.id.button3);
+		final Button anotherLayerButton = (Button) findViewById(R.id.button4);
+
+		basicLayerButton.setOnTouchListener(new View.OnTouchListener()
+		{
+			@Override
+			public boolean onTouch(View view, MotionEvent event)
+			{
+				view.setPressed(true);
+				localLayerButton.setPressed(false);
+				detailedLayerButton.setPressed(false);
+				anotherLayerButton.setPressed(false);
+				application.setCurrentDataLayer(DataSource.DataLayer.Basic);
+				return true;
+			}
+		});
+		localLayerButton.setOnTouchListener(new View.OnTouchListener()
+		{
+			@Override
+			public boolean onTouch(View v, MotionEvent event)
+			{
+				v.setPressed(true);
+				basicLayerButton.setPressed(false);
+				detailedLayerButton.setPressed(false);
+				anotherLayerButton.setPressed(false);
+				application.setCurrentDataLayer(DataSource.DataLayer.Local);
+				return true;
+			}
+		});
+		detailedLayerButton.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				v.setPressed(true);
+				localLayerButton.setPressed(false);
+				basicLayerButton.setPressed(false);
+				anotherLayerButton.setPressed(false);
+				application.setCurrentDataLayer(DataSource.DataLayer.Detailed);
+				return true;
+			}
+		});
+		anotherLayerButton.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				v.setPressed(true);
+				localLayerButton.setPressed(false);
+				basicLayerButton.setPressed(false);
+				detailedLayerButton.setPressed(false);
+				application.setCurrentDataLayer(DataSource.DataLayer.Another);
+				return true;
+			}
+		});
+	}
+
 	private void initiateButtons() {
+        setLayerButtonsClickListeners();
+
 		Button testButton = (Button) findViewById(R.id.testButton);
-		testButton.setOnClickListener(new View.OnClickListener() {
-			  @Override
-			  public void onClick(View v) {
-				  Intent intent = new Intent(FreeModeActivity.this, TestActivity.class);
-				  startActivity(intent);
+        testButton.setOnClickListener(new View.OnClickListener() {
+              @Override
+              public void onClick(View v) {
+                  Intent intent = new Intent(FreeModeActivity.this, TestActivity.class);
+                  startActivity(intent);
 			  }
-		  }
-		);
+               });
 	}
 
 	private void initiateSpinners() {
@@ -89,8 +169,8 @@ public class FreeModeActivity extends AppCompatActivity implements EventDispatch
 	private void populateSpinners() {
 		new AsyncTask<Void, Void, Void>()
 		{
-			ArrayList<Item> pontosInicio = null;
-			ArrayList<Item> pontosFim = null;
+			ArrayList<Item> pontosInicio = new ArrayList<Item>();
+			ArrayList<Item> pontosFim = new ArrayList<Item>();
 
 			@Override
 			protected Void doInBackground(Void... params)
