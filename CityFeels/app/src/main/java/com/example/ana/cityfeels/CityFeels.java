@@ -1,5 +1,8 @@
 package com.example.ana.cityfeels;
 
+import android.content.Context;
+import android.hardware.SensorManager;
+import android.location.LocationManager;
 import android.os.StrictMode;
 import android.util.Log;
 
@@ -37,12 +40,10 @@ public class CityFeels extends android.app.Application implements EventDispatche
             }
         });
 
-        /*
         this.orientationModule = new OrientationModule();
-
-        orientationModule.OrientationInit((LocationManager) getSystemService(Context.LOCATION_SERVICE),
+        orientationModule.OrientationInit(
+                (LocationManager) getSystemService(Context.LOCATION_SERVICE),
                 (SensorManager) getSystemService(SENSOR_SERVICE));
-        */
     }
 
     @Override
@@ -50,7 +51,7 @@ public class CityFeels extends android.app.Application implements EventDispatche
         try {
             PontoInteresse pontoInteresse = DataSource.getPontoInteresse(location, this.currentDataLayer);
 
-            Float azimuth = 0f;
+            Float azimuth = this.orientationModule.getAzimuth();
             Instructions directions = new Instructions(pontoInteresse.getInformacao(), pontoInteresse.getOrientacao());
 
             this.lastInstructions = directions.applyOrientation(azimuth);
@@ -66,6 +67,8 @@ public class CityFeels extends android.app.Application implements EventDispatche
     public TextToSpeechModule getTextToSpeechModule() {
         return this.textToSpeechModule;
     }
+
+    public OrientationModule getOrientationModule() { return this.orientationModule; }
 
     public void setCurrentDataLayer(DataSource.DataLayer dataLayer) {
         this.currentDataLayer = dataLayer;

@@ -11,7 +11,7 @@ public class Instructions
 
 	static
 	{
-		INFO_ORIENTATION_DEFAULT = "Perto de si ";
+		INFO_ORIENTATION_DEFAULT = "Perto de si";
 		INFO_ORIENTATION = new String[4];
 		INFO_ORIENTATION[0] = "À sua frente";
 		INFO_ORIENTATION[1] = "À sua direita";

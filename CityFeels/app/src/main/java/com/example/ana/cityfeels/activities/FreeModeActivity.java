@@ -20,6 +20,7 @@ import com.example.ana.cityfeels.EventDispatcher;
 import com.example.ana.cityfeels.Item;
 import com.example.ana.cityfeels.Location;
 import com.example.ana.cityfeels.R;
+import com.example.ana.cityfeels.modules.OrientationModule;
 import com.example.ana.cityfeels.sia.SIA;
 
 import org.json.JSONException;
@@ -50,6 +51,10 @@ public class FreeModeActivity extends AppCompatActivity implements EventDispatch
 
         this.setState(this.application);
 		EventDispatcher.registerOnNewInstructions(this);
+
+		OrientationModule module = this.application.getOrientationModule();
+		if(!module.isActivated())
+			module.askForActivation(this, getFragmentManager());
 	}
 
 	@Override

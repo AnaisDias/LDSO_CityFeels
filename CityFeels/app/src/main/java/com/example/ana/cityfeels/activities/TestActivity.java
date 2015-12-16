@@ -66,8 +66,8 @@ public class TestActivity extends AppCompatActivity {
     private void populateSpinners() {
         new AsyncTask<Void, Void, Void>()
         {
-            ArrayList<Item> pontosInicio = null;
-            ArrayList<Item> pontosFim = null;
+            ArrayList<Item> pontosInicio = new ArrayList<Item>();
+            ArrayList<Item> pontosFim = new ArrayList<Item>();
             ArrayList<Item> pontos = new ArrayList<Item>();
 
             @Override

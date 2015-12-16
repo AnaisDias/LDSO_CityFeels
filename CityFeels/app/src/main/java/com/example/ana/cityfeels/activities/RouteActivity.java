@@ -1,8 +1,5 @@
 package com.example.ana.cityfeels.activities;
 
-import android.content.Context;
-import android.hardware.SensorManager;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -38,7 +35,6 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 
 	private CityFeels application;
 	private TextToSpeechModule textToSpeech;
-	private OrientationModule orientationModule;
 
 	static
 	{
@@ -64,10 +60,6 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 		super.onCreate(savedInstanceState);
 		this.application = (CityFeels) getApplication();
 		this.textToSpeech = this.application.getTextToSpeechModule();
-		this.orientationModule = new OrientationModule();
-		orientationModule.OrientationInit(
-				(LocationManager) getSystemService(Context.LOCATION_SERVICE),
-				(SensorManager) getSystemService(SENSOR_SERVICE));
 
 		setContentView(R.layout.activity_route);
 
@@ -207,15 +199,10 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 	}
 
 	@Override
-	protected void onResume()
-	{
+	public void onResume() {
 		super.onResume();
-		orientationModule.Resume(this, getFragmentManager());
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-		orientationModule.Pause();
+		OrientationModule module = this.application.getOrientationModule();
+		if(!module.isActivated())
+			module.askForActivation(this, getFragmentManager());
 	}
 }
