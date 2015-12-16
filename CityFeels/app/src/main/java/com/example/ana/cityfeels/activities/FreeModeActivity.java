@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -21,13 +22,20 @@ import com.example.ana.cityfeels.Location;
 import com.example.ana.cityfeels.R;
 import com.example.ana.cityfeels.sia.SIA;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
+
+import static com.example.ana.cityfeels.sia.SIA.getStartPoints;
 
 public class FreeModeActivity extends AppCompatActivity implements EventDispatcher.OnNewInstructionsEventListener
 {
 	private CityFeels application;
 	private Item<Location, String> spinner_inicio = null;
 	private Item<Location, String> spinner_destino = null;
+    private ArrayList<Item> pontosInicio = new ArrayList<>();
+    private ArrayList<Item> pontosFim = new ArrayList<>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -119,27 +127,27 @@ public class FreeModeActivity extends AppCompatActivity implements EventDispatch
 			}
 		});
 		detailedLayerButton.setOnTouchListener(new View.OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				v.setPressed(true);
-				localLayerButton.setPressed(false);
-				basicLayerButton.setPressed(false);
-				anotherLayerButton.setPressed(false);
-				application.setCurrentDataLayer(DataSource.DataLayer.Detailed);
-				return true;
-			}
-		});
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.setPressed(true);
+                localLayerButton.setPressed(false);
+                basicLayerButton.setPressed(false);
+                anotherLayerButton.setPressed(false);
+                application.setCurrentDataLayer(DataSource.DataLayer.Detailed);
+                return true;
+            }
+        });
 		anotherLayerButton.setOnTouchListener(new View.OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				v.setPressed(true);
-				localLayerButton.setPressed(false);
-				basicLayerButton.setPressed(false);
-				detailedLayerButton.setPressed(false);
-				application.setCurrentDataLayer(DataSource.DataLayer.Another);
-				return true;
-			}
-		});
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.setPressed(true);
+                localLayerButton.setPressed(false);
+                basicLayerButton.setPressed(false);
+                detailedLayerButton.setPressed(false);
+                application.setCurrentDataLayer(DataSource.DataLayer.Another);
+                return true;
+            }
+        });
 	}
 
 	private void initiateButtons() {
@@ -156,27 +164,40 @@ public class FreeModeActivity extends AppCompatActivity implements EventDispatch
 	}
 
 	private void initiateSpinners() {
-		Spinner iniciosSpinner = (Spinner) findViewById(R.id.inicios);
-		Spinner destinosSpinner = (Spinner) findViewById(R.id.destinos);
-		iniciosSpinner.setEnabled(false);
-		destinosSpinner.setEnabled(false);
-		iniciosSpinner.setOnItemSelectedListener(onItemSelectedListener);
-		destinosSpinner.setOnItemSelectedListener(onItemSelectedListener);
+		final AutoCompleteTextView iniciosTextView = (AutoCompleteTextView) findViewById(R.id.inicios);
+        iniciosTextView.setEnabled(true);
+        iniciosTextView.setOnItemSelectedListener(onItemSelectedListener);
+        final AutoCompleteTextView destinosTextView = (AutoCompleteTextView) findViewById(R.id.destinos);
+        destinosTextView.setEnabled(true);
+        destinosTextView.setOnItemSelectedListener(onItemSelectedListener);
+        iniciosTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View arg0) {
+                iniciosTextView.showDropDown();
+            }
+        });
+        destinosTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View arg0) {
+                destinosTextView.showDropDown();
+            }
+        });
 
 		populateSpinners();
 	}
 
 	private void populateSpinners() {
+        pontosInicio = new ArrayList<Item>();
+        pontosFim = new ArrayList<Item>();
 		new AsyncTask<Void, Void, Void>()
 		{
-			ArrayList<Item> pontosInicio = new ArrayList<Item>();
-			ArrayList<Item> pontosFim = new ArrayList<Item>();
+
 
 			@Override
 			protected Void doInBackground(Void... params)
 			{
 				try {
-					pontosInicio = SIA.getStartPoints();
+					pontosInicio = getStartPoints();
 				} catch(Exception e)
 				{
 					e.printStackTrace();
@@ -198,21 +219,20 @@ public class FreeModeActivity extends AppCompatActivity implements EventDispatch
 				pontosInicio.add(0, new Item<Location, String>(null, "Nenhum"));
 				pontosFim.add(0, new Item<Location, String>(null, "Nenhum"));
 
-				ArrayAdapter<Item> iniciosAdapter = new ArrayAdapter<>(FreeModeActivity.this,
-																	   android.R.layout.simple_spinner_dropdown_item,
+				ArrayAdapter<Item> iniciosAdapter = new ArrayAdapter<>(FreeModeActivity.this, android.R.layout.simple_dropdown_item_1line,
 																	   pontosInicio);
 
 				ArrayAdapter<Item> finsAdapter = new ArrayAdapter<>(FreeModeActivity.this,
 																	android.R.layout.simple_spinner_dropdown_item,
 																	pontosFim);
 
-				Spinner iniciosSpinner = (Spinner) findViewById(R.id.inicios);
-				Spinner finsSpinner = (Spinner) findViewById(R.id.destinos);
+                AutoCompleteTextView iniciosTextView = (AutoCompleteTextView) findViewById(R.id.inicios);
+                AutoCompleteTextView destinosTextView = (AutoCompleteTextView) findViewById(R.id.destinos);
 
-				iniciosSpinner.setAdapter(iniciosAdapter);
-				finsSpinner.setAdapter(finsAdapter);
-				iniciosSpinner.setEnabled(true);
-				finsSpinner.setEnabled(true);
+                iniciosTextView.setAdapter(iniciosAdapter);
+                iniciosTextView.setEnabled(true);
+                destinosTextView.setAdapter(finsAdapter);
+                destinosTextView.setEnabled(true);
 			}
 		}.execute();
 
@@ -232,16 +252,15 @@ public class FreeModeActivity extends AppCompatActivity implements EventDispatch
 		public void onItemSelected(AdapterView<?> parent, View selectedItemView,
 								   int position, long id)
 		{
-			Spinner spinner = (Spinner) parent;
-			Item<Location, String> selectedItem = (Item<Location, String>)spinner.getSelectedItem();
-
-			if(spinner.getId() == R.id.inicios)
+            String selection = (String)parent.getItemAtPosition(position);
+            AutoCompleteTextView view = (AutoCompleteTextView) selectedItemView;
+            if(view.getId()==R.id.inicios)
 			{
-				spinner_inicio = selectedItem;
+				spinner_inicio = pontosInicio.get(view.getListSelection());
 			}
-			else if(spinner.getId() == R.id.destinos)
+			else if(view.getId() == R.id.destinos)
 			{
-				spinner_destino = selectedItem;
+				spinner_destino = pontosFim.get(view.getListSelection());;
 			}
 		}
 
