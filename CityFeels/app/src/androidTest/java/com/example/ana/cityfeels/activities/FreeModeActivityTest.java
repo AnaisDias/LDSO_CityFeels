@@ -46,16 +46,16 @@ public class FreeModeActivityTest extends ActivityInstrumentationTestCase2<FreeM
         ViewAsserts.assertOnScreen(decorView, this.freeModeActivity.findViewById(R.id.inicios));
         ViewAsserts.assertOnScreen(decorView, this.freeModeActivity.findViewById(R.id.destinos));
         ViewAsserts.assertOnScreen(decorView, this.freeModeActivity.findViewById(R.id.calcularButton));
-        ViewAsserts.assertOnScreen(decorView, this.freeModeActivity.findViewById(R.id.button1));
-        ViewAsserts.assertOnScreen(decorView, this.freeModeActivity.findViewById(R.id.button2));
-        ViewAsserts.assertOnScreen(decorView, this.freeModeActivity.findViewById(R.id.button3));
-        ViewAsserts.assertOnScreen(decorView, this.freeModeActivity.findViewById(R.id.button4));
+        ViewAsserts.assertOnScreen(decorView, this.freeModeActivity.findViewById(R.id.basicButton));
+        ViewAsserts.assertOnScreen(decorView, this.freeModeActivity.findViewById(R.id.localButton));
+        ViewAsserts.assertOnScreen(decorView, this.freeModeActivity.findViewById(R.id.detailedButton));
+        ViewAsserts.assertOnScreen(decorView, this.freeModeActivity.findViewById(R.id.anotherButton));
         ViewAsserts.assertOnScreen(decorView, this.freeModeActivity.findViewById(R.id.modoLivreTextView));
         ViewAsserts.assertOnScreen(decorView, this.freeModeActivity.findViewById(R.id.modoLivreDirecoes));
         ViewAsserts.assertOnScreen(decorView, this.freeModeActivity.findViewById(R.id.informacaoTextView));
         ViewAsserts.assertOnScreen(decorView, this.freeModeActivity.findViewById(R.id.repeatButtonImage));
-        ViewAsserts.assertOnScreen(decorView, this.freeModeActivity.findViewById(R.id.radioOuvir));
-        ViewAsserts.assertOnScreen(decorView, this.freeModeActivity.findViewById(R.id.radioSilenciar));
+        ViewAsserts.assertOnScreen(decorView, this.freeModeActivity.findViewById(R.id.ouvirRadioButton));
+        ViewAsserts.assertOnScreen(decorView, this.freeModeActivity.findViewById(R.id.silenciarRadioButton));
     }
 
     public void testCorrectLayerButtonPressed() {
@@ -63,25 +63,25 @@ public class FreeModeActivityTest extends ActivityInstrumentationTestCase2<FreeM
 
         switch(layer) {
             case Basic:
-                assertTrue(this.freeModeActivity.findViewById(R.id.button1).isPressed());
+                assertTrue(this.freeModeActivity.findViewById(R.id.basicButton).isPressed());
                 break;
             case Local:
-                assertTrue(this.freeModeActivity.findViewById(R.id.button2).isPressed());
+                assertTrue(this.freeModeActivity.findViewById(R.id.localButton).isPressed());
                 break;
             case Detailed:
-                assertTrue(this.freeModeActivity.findViewById(R.id.button3).isPressed());
+                assertTrue(this.freeModeActivity.findViewById(R.id.detailedButton).isPressed());
                 break;
             case Another:
-                assertTrue(this.freeModeActivity.findViewById(R.id.button4).isPressed());
+                assertTrue(this.freeModeActivity.findViewById(R.id.anotherButton).isPressed());
                 break;
         }
     }
 
     public void testLayersExclusiveSelect() {
-        Button basicLayerButton = (Button)this.freeModeActivity.findViewById(R.id.button1);
-        Button localLayerButton = (Button)this.freeModeActivity.findViewById(R.id.button2);
-        Button detailedLayerButton = (Button)this.freeModeActivity.findViewById(R.id.button3);
-        Button anotherLayerButton = (Button)this.freeModeActivity.findViewById(R.id.button4);
+        Button basicLayerButton = (Button)this.freeModeActivity.findViewById(R.id.basicButton);
+        Button localLayerButton = (Button)this.freeModeActivity.findViewById(R.id.localButton);
+        Button detailedLayerButton = (Button)this.freeModeActivity.findViewById(R.id.detailedButton);
+        Button anotherLayerButton = (Button)this.freeModeActivity.findViewById(R.id.anotherButton);
 
         TouchUtils.clickView(this, anotherLayerButton);
         Assert.assertEquals(DataSource.DataLayer.Another, this.application.getCurrentDataLayer());

@@ -1,7 +1,6 @@
 package com.example.ana.cityfeels.activities;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +17,6 @@ import com.example.ana.cityfeels.EventDispatcher;
 import com.example.ana.cityfeels.Item;
 import com.example.ana.cityfeels.Location;
 import com.example.ana.cityfeels.R;
-import com.example.ana.cityfeels.fragments.Menu;
 import com.example.ana.cityfeels.modules.OrientationModule;
 import com.example.ana.cityfeels.sia.SIA;
 

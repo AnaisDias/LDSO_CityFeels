@@ -1,6 +1,5 @@
 package com.example.ana.cityfeels.activities;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -8,7 +7,6 @@ import android.view.MenuItem;
 
 import com.example.ana.cityfeels.CityFeels;
 import com.example.ana.cityfeels.R;
-import com.example.ana.cityfeels.fragments.Menu;
 import com.example.ana.cityfeels.modules.OrientationModule;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -68,5 +66,5 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 		if(!module.isActivated())
 			module.askForActivation(this, getFragmentManager());
 	}
-	
+
 }
