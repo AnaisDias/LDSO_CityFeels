@@ -35,10 +35,9 @@
         android:layout_height="1dp"
         android:background="@android:color/darker_gray"
         android:id="@+id/splitter"
-        android:layout_marginBottom="60dp"
-        android:layout_above="@+id/repeatButtonImage"
-        android:layout_alignRight="@+id/repeatButtonImage"
-        android:layout_alignEnd="@+id/repeatButtonImage" />
+        android:layout_alignTop="@+id/fragment2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -47,108 +46,16 @@
         android:text="Informação"
         android:id="@+id/informacaoTextView"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/splitter"
-        android:layout_alignRight="@+id/repeatButtonImage" />
+        android:layout_above="@+id/splitter" />
 
-    <ImageButton
-        android:layout_width="113dp"
-        android:layout_height="93dp"
-        android:id="@+id/repeatButtonImage"
-        android:layout_gravity="right|center_vertical"
-        android:background="@drawable/cena"
+    <fragment
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:name="com.example.ana.cityfeels.fragments.Menu"
+        android:id="@+id/fragment_route_menu"
+        tools:layout="@layout/fragment_menu"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
-
-    </ImageButton>
-
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Silênciar"
-        android:id="@+id/radioSilenciar"
-        android:checked="false"
-        android:layout_below="@+id/radioOuvir"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
-
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ouvir"
-        android:id="@+id/radioOuvir"
-        android:checked="false"
-        android:layout_alignTop="@+id/repeatButtonImage"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/informacaoTextView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_above="@+id/repeatButtonImage">
-
-        <Button
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="BASICA"
-            android:id="@+id/button1"
-            android:background="@drawable/buttonprincipal"
-            android:layout_below="@+id/informacaoTextView"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp" />
-
-        <Button
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-            android:text="LOCAL"
-                    android:id="@+id/button2"
-                    android:background="@drawable/buttonprincipal"
-            android:layout_alignTop="@+id/splitter"
-            android:layout_toRightOf="@+id/button1"
-            android:layout_toEndOf="@+id/button1"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp" />
-
-        <Button
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-            android:text="DETALHE"
-                    android:id="@+id/button3"
-                    android:background="@drawable/buttonprincipal"
-            android:layout_below="@+id/informacaoTextView"
-            android:layout_toRightOf="@+id/button2"
-            android:layout_toEndOf="@+id/button2"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp" />
-
-        <Button
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    android:text="OUTRA"
-                    android:id="@+id/button4"
-                    android:background="@drawable/buttonprincipal"
-            android:layout_alignTop="@+id/splitter"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp" />
-    </LinearLayout>
 
 </RelativeLayout>

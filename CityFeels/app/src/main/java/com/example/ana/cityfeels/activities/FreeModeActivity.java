@@ -1,36 +1,33 @@
 package com.example.ana.cityfeels.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.ana.cityfeels.CityFeels;
-import com.example.ana.cityfeels.DataSource;
 import com.example.ana.cityfeels.EventDispatcher;
 import com.example.ana.cityfeels.Item;
 import com.example.ana.cityfeels.Location;
 import com.example.ana.cityfeels.R;
+import com.example.ana.cityfeels.fragments.Menu;
 import com.example.ana.cityfeels.modules.OrientationModule;
 import com.example.ana.cityfeels.sia.SIA;
 
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.util.ArrayList;
 
 import static com.example.ana.cityfeels.sia.SIA.getStartPoints;
 
-public class FreeModeActivity extends AppCompatActivity implements EventDispatcher.OnNewInstructionsEventListener
+public class FreeModeActivity extends AppCompatActivity implements EventDispatcher.OnNewInstructionsEventListener,
+		Menu.OnFragmentInteractionListener
 {
 	private CityFeels application;
 	private Item<Location, String> spinner_inicio = null;
@@ -79,93 +76,26 @@ public class FreeModeActivity extends AppCompatActivity implements EventDispatch
     private void setState(CityFeels application) {
         TextView instructions = (TextView) findViewById(R.id.modoLivreDirecoes);
         instructions.setText(application.getLastInstructions());
-
-        DataSource.DataLayer layer = this.application.getCurrentDataLayer();
-        switch(layer) {
-            case Another:
-                findViewById(R.id.button4).setPressed(true);
-                break;
-
-            case Detailed:
-                findViewById(R.id.button3).setPressed(true);
-                break;
-
-            case Local:
-                findViewById(R.id.button2).setPressed(true);
-                break;
-
-            default:
-                findViewById(R.id.button1).setPressed(true);
-        }
     }
 
-	private void setLayerButtonsClickListeners() {
-		final Button basicLayerButton = (Button) findViewById(R.id.button1);
-		final Button localLayerButton = (Button) findViewById(R.id.button2);
-		final Button detailedLayerButton = (Button) findViewById(R.id.button3);
-		final Button anotherLayerButton = (Button) findViewById(R.id.button4);
-
-		basicLayerButton.setOnTouchListener(new View.OnTouchListener()
-		{
-			@Override
-			public boolean onTouch(View view, MotionEvent event)
-			{
-				view.setPressed(true);
-				localLayerButton.setPressed(false);
-				detailedLayerButton.setPressed(false);
-				anotherLayerButton.setPressed(false);
-				application.setCurrentDataLayer(DataSource.DataLayer.Basic);
-				return true;
-			}
-		});
-		localLayerButton.setOnTouchListener(new View.OnTouchListener()
-		{
-			@Override
-			public boolean onTouch(View v, MotionEvent event)
-			{
-				v.setPressed(true);
-				basicLayerButton.setPressed(false);
-				detailedLayerButton.setPressed(false);
-				anotherLayerButton.setPressed(false);
-				application.setCurrentDataLayer(DataSource.DataLayer.Local);
-				return true;
-			}
-		});
-		detailedLayerButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                v.setPressed(true);
-                localLayerButton.setPressed(false);
-                basicLayerButton.setPressed(false);
-                anotherLayerButton.setPressed(false);
-                application.setCurrentDataLayer(DataSource.DataLayer.Detailed);
-                return true;
-            }
-        });
-		anotherLayerButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                v.setPressed(true);
-                localLayerButton.setPressed(false);
-                basicLayerButton.setPressed(false);
-                detailedLayerButton.setPressed(false);
-                application.setCurrentDataLayer(DataSource.DataLayer.Another);
-                return true;
-            }
-        });
-	}
-
 	private void initiateButtons() {
-        setLayerButtonsClickListeners();
-
 		Button testButton = (Button) findViewById(R.id.testButton);
         testButton.setOnClickListener(new View.OnClickListener() {
-              @Override
-              public void onClick(View v) {
-                  Intent intent = new Intent(FreeModeActivity.this, TestActivity.class);
-                  startActivity(intent);
-			  }
-               });
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(FreeModeActivity.this, TestActivity.class);
+				startActivity(intent);
+			}
+		});
+
+		Button button = (Button) findViewById(R.id.calcularButton);
+		button.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(FreeModeActivity.this, RouteActivity.class);
+				startActivity(intent);
+			}
+		});
 	}
 
 	private void initiateSpinners() {
@@ -176,11 +106,11 @@ public class FreeModeActivity extends AppCompatActivity implements EventDispatch
         destinosTextView.setEnabled(true);
         destinosTextView.setOnItemSelectedListener(onItemSelectedListener);
         iniciosTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View arg0) {
-                iniciosTextView.showDropDown();
-            }
-        });
+			@Override
+			public void onClick(final View arg0) {
+				iniciosTextView.showDropDown();
+			}
+		});
         destinosTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View arg0) {
@@ -243,14 +173,6 @@ public class FreeModeActivity extends AppCompatActivity implements EventDispatch
 
 	}
 
-	/**
-	 * Called when the user clicks the Calcular button
-	 */
-	public void calcular(View view) {
-		Intent intent = new Intent(this, RouteActivity.class);
-		startActivity(intent);
-	}
-
 	public AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener()
 	{
 		@Override
@@ -275,4 +197,9 @@ public class FreeModeActivity extends AppCompatActivity implements EventDispatch
 			// your code here
 		}
 	};
+
+	@Override
+	public void onFragmentInteraction(Uri uri) {
+
+	}
 }

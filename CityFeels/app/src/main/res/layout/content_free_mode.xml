@@ -30,7 +30,6 @@
         android:layout_column="0" />
 
     <Button
-        android:onClick="calcular"
         android:layout_weight="1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -59,59 +58,9 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Informação"
         android:id="@+id/informacaoTextView"
-        android:layout_above="@+id/buttonsLayout"
+        android:layout_above="@+id/fragment"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="5dp" />
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:weightSum="4"
-        android:id="@+id/buttonsLayout"
-        android:layout_above="@+id/repeatButtonImage"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
-
-
-        <Button
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:text="BASICA"
-            android:id="@+id/button1"
-            android:background="@drawable/buttonprincipal" />
-
-        <Button
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:text="LOCAL"
-            android:id="@+id/button2"
-            android:background="@drawable/buttonprincipal" />
-
-        <Button
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:text="DETALHE"
-            android:id="@+id/button3"
-            android:background="@drawable/buttonprincipal" />
-
-        <Button
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-
-            android:text="OUTRA"
-            android:id="@+id/button4"
-            android:background="@drawable/buttonprincipal" />
-
-    </LinearLayout>
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -144,60 +93,21 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <ImageButton
-        android:layout_width="113dp"
-        android:layout_height="93dp"
-        android:id="@+id/repeatButtonImage"
-        android:layout_gravity="right|bottom"
-        android:background="@drawable/cena"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
-
-    </ImageButton>
-
-    <Switch
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Som"
-        android:id="@+id/soundSwitch"
-        android:layout_gravity="left|bottom"
-        android:clickable="true"
-        android:enabled="true"
-        android:textOn="Ligado"
-        android:textOff="Desligado"
-        android:checked="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ouvir"
-        android:id="@+id/radioOuvir"
-        android:checked="false"
-        android:layout_gravity="left|top"
-        android:layout_above="@+id/radioSilenciar"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Silênciar"
-        android:id="@+id/radioSilenciar"
-        android:checked="false"
-        android:layout_gravity="left|center_vertical"
-        android:layout_above="@+id/soundSwitch"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/modoLivreDirecoes"
         android:layout_below="@+id/modoLivreTextView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <fragment
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:name="com.example.ana.cityfeels.fragments.Menu"
+        android:id="@+id/fragment"
+        tools:layout="@layout/fragment_menu"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 

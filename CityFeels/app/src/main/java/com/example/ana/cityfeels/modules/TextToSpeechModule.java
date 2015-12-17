@@ -106,7 +106,7 @@ public class TextToSpeechModule implements TextToSpeech.OnInitListener {
 
     public void repeat() {
         if(this.lastSpeech != null)
-            this.textToSpeech.speak(this.lastSpeech, TextToSpeech.QUEUE_ADD, null);
+            this.speak(this.lastSpeech);
     }
 
     public boolean waitUntilReady() {

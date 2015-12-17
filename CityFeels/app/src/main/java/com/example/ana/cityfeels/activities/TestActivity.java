@@ -30,63 +30,30 @@ public class TestActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         this.application = (CityFeels) getApplication();
 
-        Spinner iniciosSpinner = (Spinner) findViewById(R.id.pontosIniciaisSpinner);
-        Spinner finsSpinner = (Spinner) findViewById(R.id.pontosFinaisSpinner);
-        Spinner pontosSpinner = (Spinner) findViewById(R.id.pontoCorrenteSpinner);
-        Button gerarButton = (Button)findViewById(R.id.generateButton);
-
-        iniciosSpinner.setEnabled(false);
-        finsSpinner.setEnabled(false);
+        final Spinner pontosSpinner = (Spinner) findViewById(R.id.pontoCorrenteSpinner);
         pontosSpinner.setEnabled(false);
 
         populateSpinners();
-        setSpinnersListeners();
-        setButtonListeners();
-    }
 
-    private void setButtonListeners() {
         Button gerarButton = (Button)findViewById(R.id.generateButton);
-        final Spinner pontosSpinner = (Spinner) findViewById(R.id.pontoCorrenteSpinner);
-
         gerarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Item<Location, String> currentPonto = (Item)pontosSpinner.getSelectedItem();
+                Item<Location, String> currentPonto = (Item) pontosSpinner.getSelectedItem();
                 EventDispatcher.fireNewLocation(currentPonto.getValue());
             }
         });
-    }
-
-    private void setSpinnersListeners() {
-        Spinner iniciosSpinner = (Spinner) findViewById(R.id.pontosIniciaisSpinner);
-        Spinner finsSpinner = (Spinner) findViewById(R.id.pontosFinaisSpinner);
 
     }
 
     private void populateSpinners() {
         new AsyncTask<Void, Void, Void>()
         {
-            ArrayList<Item> pontosInicio = new ArrayList<Item>();
-            ArrayList<Item> pontosFim = new ArrayList<Item>();
             ArrayList<Item> pontos = new ArrayList<Item>();
 
             @Override
             protected Void doInBackground(Void... params)
             {
-                try {
-                    pontosInicio = SIA.getStartPoints();
-                } catch(Exception e)
-                {
-                    e.printStackTrace();
-                }
-
-                try {
-                    pontosFim = SIA.getDestinations();
-                } catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-
                 try {
                     for(com.example.ana.cityfeels.sia.PontoInteresse pontoInteresse : SIA.getPontosInteresse()) {
                         pontos.add(new Item<Location, String>(pontoInteresse.posicao, pontoInteresse.nome));
@@ -102,33 +69,15 @@ public class TestActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(Void results)
             {
-                Item<Location, String> nullEntry = new Item<Location, String>(null, "Nenhum");
-
-                pontosInicio.add(0, nullEntry);
-                pontosFim.add(0, nullEntry);
-                pontos.add(0, nullEntry);
-
-                ArrayAdapter<Item> iniciosAdapter = new ArrayAdapter<>(TestActivity.this,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        pontosInicio);
-
-                ArrayAdapter<Item> finsAdapter = new ArrayAdapter<>(TestActivity.this,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        pontosFim);
+                pontos.add(0, new Item<Location, String>(null, "Nenhum"));
 
                 ArrayAdapter<Item> pontosAdapter = new ArrayAdapter<>(TestActivity.this,
                         android.R.layout.simple_spinner_dropdown_item,
                         pontos);
 
-                Spinner iniciosSpinner = (Spinner) findViewById(R.id.pontosIniciaisSpinner);
-                Spinner finsSpinner = (Spinner) findViewById(R.id.pontosFinaisSpinner);
                 Spinner pontosSpinner = (Spinner) findViewById(R.id.pontoCorrenteSpinner);
 
-                iniciosSpinner.setAdapter(iniciosAdapter);
-                finsSpinner.setAdapter(finsAdapter);
                 pontosSpinner.setAdapter(pontosAdapter);
-                iniciosSpinner.setEnabled(true);
-                finsSpinner.setEnabled(true);
                 pontosSpinner.setEnabled(true);
             }
         }.execute();
