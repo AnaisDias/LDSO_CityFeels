@@ -26,9 +26,7 @@ import java.util.ArrayList;
 
 import static com.example.ana.cityfeels.sia.SIA.getStartPoints;
 
-public class FreeModeActivity extends AppCompatActivity implements EventDispatcher.OnNewInstructionsEventListener,
-		Menu.OnFragmentInteractionListener
-{
+public class FreeModeActivity extends AppCompatActivity implements EventDispatcher.OnNewInstructionsEventListener {
 	private CityFeels application;
 	private Item<Location, String> spinner_inicio = null;
 	private Item<Location, String> spinner_destino = null;
@@ -198,8 +196,4 @@ public class FreeModeActivity extends AppCompatActivity implements EventDispatch
 		}
 	};
 
-	@Override
-	public void onFragmentInteraction(Uri uri) {
-
-	}
 }

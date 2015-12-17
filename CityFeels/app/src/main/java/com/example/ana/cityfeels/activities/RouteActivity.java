@@ -17,8 +17,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class RouteActivity extends AppCompatActivity implements OnMapReadyCallback, Menu.OnFragmentInteractionListener
-{
+public class RouteActivity extends AppCompatActivity implements OnMapReadyCallback {
 	private CityFeels application;
 
 	@Override
@@ -69,9 +68,5 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 		if(!module.isActivated())
 			module.askForActivation(this, getFragmentManager());
 	}
-
-	@Override
-	public void onFragmentInteraction(Uri uri) {
-
-	}
+	
 }

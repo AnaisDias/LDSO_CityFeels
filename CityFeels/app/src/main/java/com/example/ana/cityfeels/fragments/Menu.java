@@ -1,11 +1,7 @@
 package com.example.ana.cityfeels.fragments;
 
 import android.app.Activity;
-import android.app.Application;
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -14,24 +10,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
-import android.widget.Switch;
 
 import com.example.ana.cityfeels.CityFeels;
 import com.example.ana.cityfeels.DataSource;
 import com.example.ana.cityfeels.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link Menu.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link Menu#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class Menu extends Fragment {
 
     private CityFeels application;
-    private OnFragmentInteractionListener mListener;
 
     public Menu() {
         // Required empty public constructor
@@ -170,23 +156,6 @@ public class Menu extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         this.setState(this.application);
@@ -218,18 +187,4 @@ public class Menu extends Fragment {
             ((RadioButton)activity.findViewById(R.id.silenciarRadioButton)).setChecked(true);
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 }
