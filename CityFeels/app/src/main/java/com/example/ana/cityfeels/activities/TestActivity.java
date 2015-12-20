@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import com.example.ana.cityfeels.CityFeels;
-import com.example.ana.cityfeels.EventDispatcher;
 import com.example.ana.cityfeels.Item;
 import com.example.ana.cityfeels.Location;
 import com.example.ana.cityfeels.R;
@@ -40,7 +39,7 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Item<Location, String> currentPonto = (Item) pontosSpinner.getSelectedItem();
-                EventDispatcher.fireNewLocation(currentPonto.getValue());
+                application.setLocation(currentPonto.getValue());
             }
         });
 

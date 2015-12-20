@@ -1,8 +1,15 @@
 package com.example.ana.cityfeels.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -14,7 +21,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.ana.cityfeels.CityFeels;
-import com.example.ana.cityfeels.EventDispatcher;
+import com.example.ana.cityfeels.BroadcastManager;
 import com.example.ana.cityfeels.Item;
 import com.example.ana.cityfeels.Location;
 import com.example.ana.cityfeels.R;
@@ -24,7 +31,8 @@ import com.example.ana.cityfeels.sia.SIA;
 import java.util.ArrayList;
 
 
-public class FreeModeActivity extends AppCompatActivity implements EventDispatcher.OnNewInstructionsEventListener {
+public class FreeModeActivity extends AppCompatActivity {
+
     private CityFeels application;
     private Item<Location, String> spinner_inicio = null;
     private Item<Location, String> spinner_destino = null;
@@ -34,6 +42,10 @@ public class FreeModeActivity extends AppCompatActivity implements EventDispatch
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         setContentView(R.layout.activity_free_mode);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -42,36 +54,35 @@ public class FreeModeActivity extends AppCompatActivity implements EventDispatch
         initiateSpinners();
         initiateButtons();
 
-        this.setState(this.application);
-        EventDispatcher.registerOnNewInstructions(this);
+        BroadcastManager broadcastManager = this.application.getBroadcastManager();
+
+        broadcastManager.registerOnNewInstructions(this, new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                TextView view = (TextView) findViewById(R.id.modoLivreDirecoes);
+                view.setText(application.getLastInstructions());
+            }
+        });
+
+        broadcastManager.registerOnConnectivityActive(this, new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Button calcularButton = (Button) findViewById(R.id.calcularButton);
+                calcularButton.setEnabled(true);
+            }
+        });
+
+        broadcastManager.registerOnConnectivityInactive(this, new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Button calcularButton = (Button) findViewById(R.id.calcularButton);
+                calcularButton.setEnabled(false);
+            }
+        });
 
         OrientationModule module = this.application.getOrientationModule();
         if (!module.isActivated())
             module.askForActivation(this, getFragmentManager());
-    }
-
-    @Override
-    public void onNewInstructions(String newInstructions) {
-        TextView view = (TextView) findViewById(R.id.modoLivreDirecoes);
-        view.setText(newInstructions);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        setState(this.application);
-        EventDispatcher.registerOnNewInstructions(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        EventDispatcher.removeOnNewInstructions(this);
-    }
-
-    private void setState(CityFeels application) {
-        TextView instructions = (TextView) findViewById(R.id.modoLivreDirecoes);
-        instructions.setText(application.getLastInstructions());
     }
 
     private void initiateButtons() {
@@ -95,6 +106,12 @@ public class FreeModeActivity extends AppCompatActivity implements EventDispatch
                 startActivity(intent);
             }
         });
+
+        NetworkInfo info = ((ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+        if(info != null && info.isConnected())
+            button.setEnabled(true);
+        else
+            button.setEnabled(false);
     }
 
     private void initiateSpinners() {
@@ -183,5 +200,6 @@ public class FreeModeActivity extends AppCompatActivity implements EventDispatch
             Log.d("ItemClick", spinner_destino.getValue().toString());
         }
     };
+
 
 }
