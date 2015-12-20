@@ -3,13 +3,11 @@ package com.example.ana.cityfeels.activities;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,6 +16,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.ana.cityfeels.CityFeels;
@@ -34,10 +34,8 @@ import java.util.ArrayList;
 public class FreeModeActivity extends AppCompatActivity {
 
     private CityFeels application;
-    private Item<Location, String> spinner_inicio = null;
-    private Item<Location, String> spinner_destino = null;
-    private ArrayList<Item<Location, String>> pontosInicio = new ArrayList<>();
-    private ArrayList<Item<Location, String>> pontosFim = new ArrayList<>();
+    private Location inicio = null;
+    private Location destino = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +51,14 @@ public class FreeModeActivity extends AppCompatActivity {
 
         initiateSpinners();
         initiateButtons();
+        registerOnBroadcasts();
 
+        OrientationModule module = this.application.getOrientationModule();
+        if (!module.isActivated())
+            module.askForActivation(this, getFragmentManager());
+    }
+
+    private void registerOnBroadcasts() {
         BroadcastManager broadcastManager = this.application.getBroadcastManager();
 
         broadcastManager.registerOnNewInstructions(this, new BroadcastReceiver() {
@@ -79,10 +84,6 @@ public class FreeModeActivity extends AppCompatActivity {
                 calcularButton.setEnabled(false);
             }
         });
-
-        OrientationModule module = this.application.getOrientationModule();
-        if (!module.isActivated())
-            module.askForActivation(this, getFragmentManager());
     }
 
     private void initiateButtons() {
@@ -95,13 +96,17 @@ public class FreeModeActivity extends AppCompatActivity {
             }
         });
 
-        Button button = (Button) findViewById(R.id.calcularButton);
-        button.setOnClickListener(new View.OnClickListener() {
+        Button calcularButton = (Button) findViewById(R.id.calcularButton);
+        calcularButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(FreeModeActivity.this, RouteActivity.class);
-                String info = spinner_inicio.getValue().latitude + "," + spinner_inicio.getValue().longitude;
-                info += ";" + spinner_destino.getValue().latitude + "," + spinner_destino.getValue().longitude;
+
+                if(inicio == null || destino == null)
+                   return;
+
+                String info = inicio.latitude + "," + inicio.longitude;
+                info += ";" + destino.latitude + "," + destino.longitude;
                 intent.putExtra("info", info);
                 startActivity(intent);
             }
@@ -109,18 +114,37 @@ public class FreeModeActivity extends AppCompatActivity {
 
         NetworkInfo info = ((ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
         if(info != null && info.isConnected())
-            button.setEnabled(true);
+            calcularButton.setEnabled(true);
         else
-            button.setEnabled(false);
+            calcularButton.setEnabled(false);
     }
 
     private void initiateSpinners() {
         final AutoCompleteTextView iniciosTextView = (AutoCompleteTextView) findViewById(R.id.inicios);
         iniciosTextView.setEnabled(true);
-        iniciosTextView.setOnItemClickListener(onItemClickListenerInicio);
+        iniciosTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View selectedItemView, int position, long id) {
+                Item<Location, String> selectedItem = (Item<Location, String>) parent.getItemAtPosition(position);
+
+                if (selectedItem != null)
+                    inicio = selectedItem.getValue();
+            }
+        });
+
         final AutoCompleteTextView destinosTextView = (AutoCompleteTextView) findViewById(R.id.destinos);
         destinosTextView.setEnabled(true);
-        destinosTextView.setOnItemClickListener(onItemClickListenerDestino);
+        destinosTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View selectedItemView, int position, long id) {
+                Item<Location, String> selectedItem = (Item<Location, String>) parent.getItemAtPosition(position);
+
+                if(selectedItem != null)
+                    destino = selectedItem.getValue();
+            }
+        });
+
+
         iniciosTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View arg0) {
@@ -138,10 +162,10 @@ public class FreeModeActivity extends AppCompatActivity {
     }
 
     private void populateSpinners() {
-        pontosInicio = new ArrayList<>();
-        pontosFim = new ArrayList<>();
-        new AsyncTask<Void, Void, Void>() {
 
+        new AsyncTask<Void, Void, Void>() {
+            ArrayList<Item<Location, String>> pontosInicio = new ArrayList<>();
+            ArrayList<Item<Location, String>> pontosFim = new ArrayList<>();
 
             @Override
             protected Void doInBackground(Void... params) {
@@ -182,24 +206,5 @@ public class FreeModeActivity extends AppCompatActivity {
         }.execute();
 
     }
-
-    public AdapterView.OnItemClickListener onItemClickListenerInicio = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View selectedItemView, int position, long id) {
-            spinner_inicio = (Item<Location, String>) parent.getItemAtPosition(position);
-            Log.d("ItemClick", spinner_inicio.getKey());
-            Log.d("ItemClick", spinner_inicio.getValue().toString());
-        }
-    };
-
-    public AdapterView.OnItemClickListener onItemClickListenerDestino = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View selectedItemView, int position, long id) {
-            spinner_destino = (Item<Location, String>) parent.getItemAtPosition(position);
-            Log.d("ItemClick", spinner_destino.getKey());
-            Log.d("ItemClick", spinner_destino.getValue().toString());
-        }
-    };
-
 
 }
