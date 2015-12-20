@@ -34,6 +34,7 @@ import static com.example.ana.cityfeels.sia.SIA.getStartPoints;
 public class RouteActivity extends AppCompatActivity implements OnMapReadyCallback {
     private CityFeels application;
     ArrayList<Location> courseCoords;
+    GoogleMap map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +64,28 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 
     @Override
     public void onMapReady(GoogleMap map) {
-        map.addMarker(new MarkerOptions()
-                .position(new LatLng(41.1654034, -8.6085272))
-                .title("Marker"));
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(41.1654034, -8.6085272), 14));
+        if(courseCoords.size() != 0){
+            map.addMarker(new MarkerOptions()
+                    .position(new LatLng(courseCoords.get(0).latitude, courseCoords.get(0).longitude))
+                    .title("Start"));
+            map.addMarker(new MarkerOptions()
+                    .position(new LatLng(courseCoords.get(courseCoords.size() - 1).latitude, courseCoords.get(courseCoords.size() - 1).
+                            longitude))
+                    .title("End"));
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(courseCoords.get(0).latitude, courseCoords.get(0).longitude), 14));
+            for(int i = 1; i < courseCoords.size(); i++) {
+                map.addPolyline(new PolylineOptions()
+                        .add(new LatLng(courseCoords.get(i-1).latitude, courseCoords.get(i-1).longitude), new LatLng(courseCoords.get(i).latitude, courseCoords.get(i).longitude))
+                        .width(5)
+                        .color(Color.RED));
+            }
 
+        }
+        else{
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(41.1654034, -8.6085272), 14));
+        }
+
+        map.setMyLocationEnabled(true);
     }
 
     @Override
