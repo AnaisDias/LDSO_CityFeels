@@ -4,8 +4,8 @@ import com.example.ana.cityfeels.Location;
 
 public class PontoInteresseDetailed extends PontoInteresseLocal  {
 
-    public PontoInteresseDetailed(int id, Location local, String informacao, int orientacao, PontoInteresseBasic[] arredores) {
-        super(id, local, informacao, orientacao, arredores);
+    public PontoInteresseDetailed(int id, String nome, Location local, String informacao, int orientacao, PontoInteresseBasic[] arredores) {
+        super(id, nome, local, informacao, orientacao, arredores);
     }
 
     @Override

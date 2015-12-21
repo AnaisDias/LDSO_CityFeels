@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/informacaoTextView"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="35dp">
 
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
             android:name="com.google.android.gms.maps.MapFragment"
@@ -35,9 +35,9 @@
         android:layout_height="1dp"
         android:background="@android:color/darker_gray"
         android:id="@+id/splitter"
-        android:layout_alignTop="@+id/fragment2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignTop="@+id/informacaoTextView"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -45,8 +45,9 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Informação"
         android:id="@+id/informacaoTextView"
-        android:layout_alignParentStart="true"
-        android:layout_above="@+id/splitter" />
+        android:layout_above="@+id/fragment_route_menu"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <fragment
         android:layout_width="wrap_content"

@@ -10,10 +10,11 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import com.example.ana.cityfeels.CityFeels;
+import com.example.ana.cityfeels.DataSource;
 import com.example.ana.cityfeels.Item;
 import com.example.ana.cityfeels.Location;
 import com.example.ana.cityfeels.R;
-import com.example.ana.cityfeels.sia.SIA;
+import com.example.ana.cityfeels.models.PontoInteresse;
 
 import java.util.ArrayList;
 
@@ -54,8 +55,8 @@ public class TestActivity extends AppCompatActivity {
             protected Void doInBackground(Void... params)
             {
                 try {
-                    for(com.example.ana.cityfeels.sia.PontoInteresse pontoInteresse : SIA.getPontosInteresse()) {
-                        pontos.add(new Item<Location, String>(pontoInteresse.posicao, pontoInteresse.nome));
+                    for(PontoInteresse pontoInteresse : DataSource.getPontosInteresse()) {
+                        pontos.add(new Item<>(pontoInteresse.getPosicao(), pontoInteresse.getNome()));
                     }
                 } catch (Exception e)
                 {

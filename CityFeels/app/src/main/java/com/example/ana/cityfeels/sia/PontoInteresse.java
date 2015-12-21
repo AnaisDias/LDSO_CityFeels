@@ -1,6 +1,5 @@
 package com.example.ana.cityfeels.sia;
 
-import com.example.ana.cityfeels.Location;
 
 public class PontoInteresse {
 
@@ -13,12 +12,12 @@ public class PontoInteresse {
 
     public PontoInteresse() {}
 
-    public PontoInteresse(int id, String nome, Location local, String informacao, int orientacao, String infDetalhada)
+    public PontoInteresse(int id, String nome, Location posicao, String informacao, int orientacao, String infDetalhada)
     {
         this.id = id;
         this.nome = nome;
         this.informacao = informacao;
-        this.posicao = local;
+        this.posicao = posicao;
         this.orientacao = orientacao;
         this.infDetalhada = infDetalhada;
     }

@@ -61,16 +61,21 @@ public class CityFeels extends android.app.Application {
 
         this.lastLocation = location;
         try {
-            this.lastPontoInteresse = DataSource.getPontoInteresse(location, this.currentDataLayer);
+            PontoInteresse ponto = DataSource.getPontoInteresse(location, this.currentDataLayer);
 
-            Float azimuth = this.orientationModule.getAzimuth();
-            Instructions directions = new Instructions(this.lastPontoInteresse.getInformacao(), this.lastPontoInteresse.getOrientacao());
+            if(ponto != null) {
+                this.lastPontoInteresse = ponto;
 
-            this.lastInstructions = directions.applyOrientation(azimuth);
-            this.textToSpeechModule.speak(this.lastInstructions);
+                Float azimuth = this.orientationModule.getAzimuth();
+                Instructions directions = new Instructions(ponto.getInformacao(), ponto.getOrientacao());
+                this.lastInstructions = directions.applyOrientation(azimuth);
 
-            this.broadcastManager.broadcastNewLocation();
-            this.broadcastManager.broadcastNewPontoInteresse();
+                this.textToSpeechModule.speak(this.lastInstructions);
+
+                this.broadcastManager.broadcastNewLocation();
+                this.broadcastManager.broadcastNewPontoInteresse();
+            }
+
             this.broadcastManager.broadcastNewInstructions();
         } catch (IOException e) {
             Log.e("NETWORK", e.getMessage());

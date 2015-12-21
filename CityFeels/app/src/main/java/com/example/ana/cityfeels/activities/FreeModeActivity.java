@@ -10,23 +10,21 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.ana.cityfeels.CityFeels;
 import com.example.ana.cityfeels.BroadcastManager;
+import com.example.ana.cityfeels.CityFeels;
+import com.example.ana.cityfeels.DataSource;
 import com.example.ana.cityfeels.Item;
 import com.example.ana.cityfeels.Location;
 import com.example.ana.cityfeels.R;
+import com.example.ana.cityfeels.models.PontoInteresse;
 import com.example.ana.cityfeels.modules.OrientationModule;
-import com.example.ana.cityfeels.sia.SIA;
 
 import java.util.ArrayList;
 
@@ -170,13 +168,16 @@ public class FreeModeActivity extends AppCompatActivity {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    pontosInicio = SIA.getStartPoints();
+                    for(PontoInteresse ponto : DataSource.getStartPontosInteresse())
+                        pontosInicio.add(new Item<>(ponto.getPosicao(), ponto.getNome()));
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
                 try {
-                    pontosFim = SIA.getDestinations();
+                    for(PontoInteresse ponto : DataSource.getEndPontosInteresse())
+                        pontosFim.add(new Item<>(ponto.getPosicao(), ponto.getNome()));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
