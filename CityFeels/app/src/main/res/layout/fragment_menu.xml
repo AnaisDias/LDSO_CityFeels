@@ -32,8 +32,9 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
             android:text="BASICA"
+            android:textColor="@color/colorWhite"
             android:id="@+id/basicButton"
-            android:background="@drawable/buttonprincipal" />
+            android:background="@drawable/primarybutton" />
 
         <Button
             android:layout_weight="1"
@@ -41,8 +42,9 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
             android:text="LOCAL"
+            android:textColor="@color/colorWhite"
             android:id="@+id/localButton"
-            android:background="@drawable/buttonprincipal" />
+            android:background="@drawable/primarybutton" />
 
         <Button
             android:layout_weight="1"
@@ -50,16 +52,18 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
             android:text="DETALHE"
+            android:textColor="@color/colorWhite"
             android:id="@+id/detailedButton"
-            android:background="@drawable/buttonprincipal" />
+            android:background="@drawable/primarybutton" />
 
         <Button
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="OUTRA"
+            android:textColor="@color/colorWhite"
             android:id="@+id/anotherButton"
-            android:background="@drawable/buttonprincipal" />
+            android:background="@drawable/primarybutton" />
     </LinearLayout>
 
     <RadioGroup
